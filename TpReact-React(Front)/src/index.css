@@ -1,0 +1,148 @@
+html{
+  box-sizing: border-box;
+  margin: 0;
+}
+*,*::after,*::before{
+  box-sizing: inherit;
+  margin: 0;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+.CostoInterior{
+  color: orange;
+  font-size: 14px;
+  line-height: 21px;
+}
+.CostoGratis{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: .5rem;
+  color: #00A650;
+  font-size: 14px;
+  line-height: 21px;
+}
+.cardContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgb(239, 246, 235);
+  padding: 1rem 0;
+}
+.detalleContainer{
+  display: grid;
+  grid-template-columns: 60% 1fr;
+  grid-template-rows: 1fr;
+}
+.cardBody{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  margin-left: 1rem;
+}
+.m-0{
+  margin: 0;
+}
+.mt-4{
+  margin: .25rem 0;
+}
+.mt-8{
+  margin: .5rem 0;
+}
+.mt-12{
+  margin: .75rem 0;
+}
+.mt-16{
+  margin: 1rem 0;
+}
+
+.title{
+  color: #333;
+  font-size: 1.25rem;
+  font-weight: 300;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+.price{
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.3;
+}
+.sales{
+  font-size: 14px;
+  font-weight: 400;
+}
+.titleDetalle{
+  grid-column: 1 / span 2;
+  grid-row: 1 / 2;
+  text-align: center;
+}
+.infoDetalle{
+  grid-column: 2 / 3;
+  grid-row: 2/3;
+  display: grid;
+  justify-items: start;
+  align-items: center;
+  border-left: 1px solid rgb(239, 246, 235);
+  border-right: 1px solid rgb(239, 246, 235);
+  padding: 0 2rem;
+}
+.mainDetalle{
+grid-column: 1/2;
+grid-row: 2/3;
+
+}
+.titleInformacion{
+  text-align: start;
+}
