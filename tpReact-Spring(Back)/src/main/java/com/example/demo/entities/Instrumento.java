@@ -4,13 +4,12 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
+import org.hibernate.annotations.Proxy;
 
 @Entity
 @Table(name = "instrumento")
 @Getter
 @Setter
-@ToString
 @EqualsAndHashCode
 public class Instrumento {
     @Id
@@ -26,5 +25,7 @@ public class Instrumento {
     private Integer cantidadVendida;
     private String descripcion;
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_categoria")
+    private Categoria categoria;
 }

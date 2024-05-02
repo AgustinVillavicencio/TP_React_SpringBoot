@@ -4,12 +4,17 @@ import Carousel from 'react-bootstrap/Carousel';
 import { getAll } from "../Functions/FunctionsApi";
 import Instrumento from "../Entities/Intrumento";
 
+// Definición del componente funcional Home
 const Home = () => {
-    const [index, setIndex] = useState<number>(0);
-    const handleSelect = (selectedIndex: number) => {
+  // Estado local para el índice activo del carousel
+  const [index, setIndex] = useState<number>(0);
+
+  // Función para manejar la selección de elementos en el carousel
+  const handleSelect = (selectedIndex: number) => {
       setIndex(selectedIndex);
-    };
-  
+  };
+
+  // Estado local para almacenar la lista de instrumentos
     const [instrumentos, setInstrumentos] = useState<Instrumento[]>([]);
     const mostrar = async () => {
       const result: Instrumento[] = await getAll();

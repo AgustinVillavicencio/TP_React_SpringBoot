@@ -6,36 +6,50 @@ import { useParams } from 'react-router-dom';
 import NavBar from './NavBar';
 import InfoDetails from './InfoDetails';
 
-function InstrumentoDetails(){
-    const {id} = useParams()
+// Definición del componente funcional InstrumentoDetails
+function InstrumentoDetails() {
+  // Obtiene el parámetro 'id' de la URL utilizando el hook useParams
+  const { id } = useParams();
+
+  // Estado local para almacenar la información del instrumento
     const [instrumento,setInstrumento] = useState<Instrumento>();
-  const mostrar = async () =>{
-    const result:Instrumento = await getInstrumentoById(Number(id));
-    setInstrumento(result)
-  }
-  useEffect(()=>{
-    mostrar();
-  })
-  
-    return(
-      <>
-              <NavBar/>
-        <div className='detalleContainer'>
-            <div className='mainDetalle'>
-                <img width={240} height={240} src={`../src/assets/img/${instrumento?.imagen}`} alt={String(instrumento?.id)} />
-                <div className='titleInformacion'>
-                  <p>Descripción:</p>
-                  <p>{instrumento?.descripcion}</p>
-                </div>
-            </div>
-            {
-              // En este codigo le decimos que renderice el componente solo si instrumento existe o no es nulo
-              instrumento && <InfoDetails instrumento={instrumento} />
-            }
-        </div>
-      </>
-    )
+  {/* Llama a la función mostrar para obtener y establecer la información del instrumento */}
+  const mostrar = async () => {
+    // Llama a la función getInstrumentoById para obtener el instrumento por su ID
+    const result: Instrumento = await getInstrumentoById(Number(id));
+    // Establece el estado del instrumento con la información obtenida
+    setInstrumento(result);
 }
 
+// Hook useEffect que se ejecuta después de que el componente se monta
+// Llama a la función mostrar para cargar la información del instrumento
+useEffect(() => {
+    mostrar();
+})
 
+return (
+    <>
+        {/* Renderiza el componente NavBar */}
+        <NavBar />
+
+        {/* Contenedor principal para mostrar los detalles del instrumento */}
+        <div className='detalleContainer'>
+            <div className='mainDetalle'>
+                {/* Renderiza la imagen del instrumento */}
+                <img width={240} height={240} src={`../src/assets/img/${instrumento?.imagen}`} alt={String(instrumento?.id)} />
+                <div className='titleInformacion'>
+                    {/* Renderiza la descripción del instrumento */}
+                    <p>Descripción:</p>
+                    <p>{instrumento?.descripcion}</p>
+                </div>
+            </div>
+
+            {/* Renderiza el componente InfoDetails solo si el instrumento existe */}
+            {instrumento && <InfoDetails instrumento={instrumento} />}
+        </div>
+    </>
+)
+}
+
+// Exporta el componente InstrumentoDetails como el componente predeterminado
 export default InstrumentoDetails;
