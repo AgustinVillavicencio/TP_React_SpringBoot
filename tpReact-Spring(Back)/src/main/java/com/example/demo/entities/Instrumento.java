@@ -25,7 +25,7 @@ public class Instrumento {
     private Integer cantidadVendida;
     private String descripcion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_categoria")
     private Categoria categoria;
 }
