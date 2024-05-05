@@ -19,7 +19,6 @@ const NavBar = () => {
                             <Nav.Link href="/dondeEstamos">Donde estamos</Nav.Link>
                             <Nav.Link href="/instrumentos">Instrumentos</Nav.Link>
                             <Nav.Link href="/grilla">Grilla</Nav.Link>
-                            <Nav.Link href="/filtro">Filtro</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

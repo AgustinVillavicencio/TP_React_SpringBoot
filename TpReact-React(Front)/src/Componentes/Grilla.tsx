@@ -11,37 +11,29 @@ interface Props {
 const Grilla: React.FC<Props> = () => {
     const [instrumentos, setInstrumentos] = useState<Instrumento[]>([]);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
+    const [filtroCategoria, setFiltroCategoria] = useState<string>("");
 
     useEffect(() => {
-        const cargarInstrumentos = async () => {
+        const cargarDatos = async () => {
             try {
                 const instrumentosData = await getAll();
                 setInstrumentos(instrumentosData);
-                cargarCategorias();
-                 // Llamamos a cargarCategorias después de obtener los instrumentos
-            } catch (error) {
-                console.error('Error al cargar los instrumentos:', error);
-            }
-        };
-    
-        const cargarCategorias = async () => {
-            try {
+                
                 const categoriasData = await getAllCategorias();
                 setCategorias(categoriasData);
 
             } catch (error) {
-                console.error('Error al cargar las categorías:', error);
+                console.error('Error al cargar los datos:', error);
             }
         };
     
-        cargarInstrumentos();
+        cargarDatos();
     }, []);
     
-
     const handleDelete = async (id: number) => {
         try {
-            const confirmDelete=confirm("Desea eliminar el instumento?")
-            if(confirmDelete){
+            const confirmDelete = window.confirm("Desea eliminar el instrumento?");
+            if (confirmDelete) {
                 await deleteInstrumento(id);
                 setInstrumentos(instrumentos.filter(instrumento => instrumento.id !== id));
             }
@@ -52,15 +44,27 @@ const Grilla: React.FC<Props> = () => {
 
     const navigate = useNavigate();
 
-const handleModificar = (id: number) => {
-    navigate(`/formulario/${id}`);
-};
+    const handleModificar = (id: number) => {
+        navigate(`/formulario/${id}`);
+    };
 
+    const handleCategoriaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setFiltroCategoria(event.target.value);
+    };
 
     return (
         <>
             <NavBar />
-            <button className='btn btn-primary mt-4' onClick={()=> handleModificar(0)}>Nuevo</button>
+            <button className='btn btn-primary mt-4' onClick={() => handleModificar(0)}>Nuevo</button>
+            <div>
+                <label htmlFor="categoria">Selecciona una categoría:</label>
+                <select id="categoria" onChange={handleCategoriaChange} value={filtroCategoria}>
+                    <option value="">Todas</option>
+                    {categorias.map(categoria => (
+                    <option key={categoria.denominacion} value={categoria.denominacion}>{categoria.denominacion}</option>
+                    ))}
+                </select>
+            </div>
             <div className='mt-4'>
                 <table>
                     <thead>
@@ -74,13 +78,13 @@ const handleModificar = (id: number) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {instrumentos.map(instrumento => (
+                        {instrumentos.filter(instrumento => !filtroCategoria || instrumento.id_categoria?.denominacion === filtroCategoria).map(instrumento => (
                             <tr key={instrumento.id}>
                                 <td className='px-2'>{instrumento.id}</td>
                                 <td className='px-2'>{instrumento.instrumento}</td>
                                 <td className='px-2'>{instrumento.id_categoria?.denominacion}</td>
                                 <td className='px-2'>{instrumento.precio}</td>
-                                <td className='px-2'><button className='btn btn-success' onClick={()=> handleModificar(instrumento.id)}>Modificar</button></td>
+                                <td className='px-2'><button className='btn btn-success' onClick={() => handleModificar(instrumento.id)}>Modificar</button></td>
                                 <td className='px-2'><button className='btn btn-danger' onClick={() => handleDelete(instrumento.id)}>Eliminar</button></td>
                             </tr>
                         ))}
