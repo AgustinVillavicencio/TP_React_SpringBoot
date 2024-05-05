@@ -77,7 +77,7 @@ const handleModificar = (id: number) => {
                             <tr key={instrumento.id}>
                                 <td className='px-2'>{instrumento.id}</td>
                                 <td className='px-2'>{instrumento.instrumento}</td>
-                                <td className='px-2'>{categorias.find(categoria => categoria.id === instrumento.idCategoria)?.denominacion}</td>
+                                <td className='px-2'>{instrumento.id_categoria?.denominacion}</td>
                                 <td className='px-2'>{instrumento.precio}</td>
                                 <td className='px-2'><button className='btn btn-success' onClick={()=> handleModificar(instrumento.id)}>Modificar</button></td>
                                 <td className='px-2'><button className='btn btn-danger' onClick={() => handleDelete(instrumento.id)}>Eliminar</button></td>

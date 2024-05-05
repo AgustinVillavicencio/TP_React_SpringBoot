@@ -2,12 +2,14 @@ package com.example.demo.services;
 
 import com.example.demo.entities.Instrumento;
 import com.example.demo.repository.InstrumentoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class InstrumentoService implements IInstrumentoService{
 
     @Autowired

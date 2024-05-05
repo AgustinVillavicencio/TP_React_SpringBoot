@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Instrumento from "../Entities/Intrumento";
 import Categoria from "../Entities/Categoria";
-import { getInstrumentoById , getAllCategorias } from '../Functions/FunctionsApi'; // Asumiendo que tienes una función para obtener un instrumento por su ID
+import { getInstrumentoById , getAllCategorias, createInstrumento } from '../Functions/FunctionsApi'; // Asumiendo que tienes una función para obtener un instrumento por su ID
 import NavBar from './NavBar';
 
 interface Props {}
@@ -39,8 +39,17 @@ const Form: React.FC<Props> = () => {
         }
     }, [id]);
 
-    if (loading) {
-        return <div>Cargando...</div>; // Muestra un indicador de carga mientras se cargan los datos
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = event.target;
+        setInstrumento(prevState => ({
+            ...prevState!,
+            [name]: value
+        }));
+    };
+
+    
+    if (loading || !instrumento) {
+        return <div>Cargando...</div>; // Muestra un indicador de carga mientras se cargan los datos o si no hay instrumento
     }
 
     return(
@@ -48,15 +57,21 @@ const Form: React.FC<Props> = () => {
         <NavBar />
         <div className='mt-4'>
             <form action="">
-                <label htmlFor="instrumento">Instrumento: </label><input type="text" name="instrumento" value={instrumento?.instrumento}/><br /><br />
-                <label htmlFor="marca">Marca: </label><input type="text" name="marca" value={instrumento?.marca}/><br /><br />
-                <label htmlFor="modelo">Modelo: </label><input type="text" name="modelo" value={instrumento?.modelo}/><br /><br />
-                <label htmlFor="precio">Precio: </label><input type="text" name="precio" value={instrumento?.precio}/><br /><br />
-                <label htmlFor="costo-de-envio">Costo de envio: </label><input type="text" name="costo-de-envio" value={instrumento?.costoEnvio}/><br /><br />
-                <label htmlFor="cantidad-vendida">Cantidad vendida: </label><input type="text" name="cantidad-vendida" value={instrumento?.cantidadVendida}/><br /><br />
+                <label htmlFor="instrumento">Instrumento: </label>
+                <input type="text" name="instrumento" value={instrumento.instrumento} onChange={handleChange}/><br /><br />
+                <label htmlFor="marca">Marca: </label>
+                <input type="text" name="marca" value={instrumento.marca} onChange={handleChange}/><br /><br />
+                <label htmlFor="modelo">Modelo: </label>
+                <input type="text" name="modelo" value={instrumento.modelo} onChange={handleChange}/><br /><br />
+                <label htmlFor="precio">Precio: </label>
+                <input type="text" name="precio" value={instrumento.precio} onChange={handleChange}/><br /><br />
+                <label htmlFor="costo-de-envio">Costo de envio: </label>
+                <input type="text" name="costo_envio" value={instrumento.costo_envio} onChange={handleChange}/><br /><br />
+                <label htmlFor="cantidad-vendida">Cantidad vendida: </label>
+                <input type="text" name="cantidad_vendida" value={instrumento.cantidad_vendida} onChange={handleChange}/><br /><br />
                 <label htmlFor="descripcion">Descripcion: </label>
-                <textarea name="descripcion" id="descripcion" cols={90} rows={3} value={instrumento?.descripcion}></textarea><br /><br />
-                <select name="categoria" id="categoria" value={instrumento?.idCategoria}>
+                <textarea name="descripcion" id="descripcion" cols={90} rows={3} value={instrumento.descripcion} onChange={handleChange}></textarea><br /><br />
+                <select name="id_categoria" id="categoria" value={instrumento.id_categoria.id} onChange={handleChange}>
                     {categorias.map(categoria => (
                         <option key={categoria.id} value={categoria.id}>{categoria.denominacion}</option>
                     ))}

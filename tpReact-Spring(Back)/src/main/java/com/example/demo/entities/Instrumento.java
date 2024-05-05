@@ -21,11 +21,11 @@ public class Instrumento {
     private String modelo;
     private String imagen;
     private Double precio;
-    private String costoEnvio;
-    private Integer cantidadVendida;
+    private String costo_envio;
+    private Integer cantidad_vendida;
     private String descripcion;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_categoria")
-    private Categoria categoria;
+    private Categoria id_categoria;
 }
