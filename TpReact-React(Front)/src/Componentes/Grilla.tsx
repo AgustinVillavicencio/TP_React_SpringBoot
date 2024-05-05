@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Instrumento from "../Entities/Intrumento";
+import Instrumento from "../Entities/Instrumento";
 import Categoria from "../Entities/Categoria";
 import { deleteInstrumento, getAll, getAllCategorias } from '../Functions/FunctionsApi';
 import NavBar from './NavBar';

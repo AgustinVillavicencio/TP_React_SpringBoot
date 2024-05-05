@@ -1,4 +1,4 @@
-import Instrumento from '../Entities/Intrumento';
+import Instrumento from '../Entities/Instrumento';
 import '../index.css'
 
 // Definición de la interfaz Props que describe las propiedades esperadas para el componente Card

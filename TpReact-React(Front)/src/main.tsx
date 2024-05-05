@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Map from './Componentes/Map.tsx';
 import Grilla from "./Componentes/Grilla.tsx"
 import Form from "./Componentes/Form.tsx"
+import Filtro from "./Componentes/Filtro.tsx"
 
 // Renderizado de la aplicación utilizando ReactDOM.createRoot
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -28,6 +29,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path="/instrumentos/:id" element={<InstrumentoDetails />} />
         <Route path="/grilla" element={<Grilla />} />
         <Route path="/formulario/:id" element={<Form />} />
+        <Route path="/filtro" element={<Filtro />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

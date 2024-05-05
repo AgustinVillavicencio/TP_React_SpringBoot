@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Navigate } from 'react-router-dom'; // Importa useHistory
-import Instrumento from "../Entities/Intrumento";
+import Instrumento from "../Entities/Instrumento";
 import Categoria from "../Entities/Categoria";
 import { getInstrumentoById , getAllCategorias, updateInstrumento, createInstrumento } from '../Functions/FunctionsApi'; // Asumiendo que tienes una función para obtener un instrumento por su ID
 import NavBar from './NavBar';
@@ -173,9 +173,8 @@ const Form: React.FC<Props> = () => {
                 <input type="text" name="modelo" value={instrumento.modelo} onChange={handleChange}/><br /><br />
                 <label htmlFor="precio">Precio: </label>
                 <input type="text" name="precio" value={instrumento.precio} onChange={handleChange}/><br /><br />
-                <label htmlFor="imagen">Imagen: {instrumento.imagen}</label><br />
-                <input type="file" name="imagen" accept="image/*" onChange={handleChange} /><br /><br />
-                <img src={imagenURL || ''} alt="Imagen seleccionada" />
+                <label htmlFor="imagen">Imagen: </label><br />
+                <input type="text" name="imagen" onChange={handleChange} value={instrumento.imagen}/><br /><br />
                 <label htmlFor="costo-de-envio">Costo de envio: </label>
                 <input type="text" name="costo_envio" value={instrumento.costo_envio} onChange={handleChange}/><br /><br />
                 <label htmlFor="cantidad-vendida">Cantidad vendida: </label>

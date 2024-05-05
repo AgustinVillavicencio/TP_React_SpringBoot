@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import Instrumento from '../Entities/Intrumento';
+import Instrumento from '../Entities/Instrumento';
 import { getInstrumentoById } from '../Functions/FunctionsApi';
 import { useParams } from 'react-router-dom';
 import NavBar from './NavBar';

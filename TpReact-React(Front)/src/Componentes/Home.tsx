@@ -2,7 +2,7 @@ import NavBar from "./NavBar";
 import { useState,useEffect } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import { getAll } from "../Functions/FunctionsApi";
-import Instrumento from "../Entities/Intrumento";
+import Instrumento from "../Entities/Instrumento";
 
 // Definición del componente funcional Home
 const Home = () => {

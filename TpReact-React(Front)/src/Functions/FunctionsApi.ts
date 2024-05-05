@@ -1,4 +1,4 @@
-import Instrumento from "../Entities/Intrumento";
+import Instrumento from "../Entities/Instrumento";
 // Función asincrónica para obtener todos los instrumentos
 export async function getAll() {
     // URL de la API para obtener todos los instrumentos
