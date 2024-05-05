@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Navigate } from 'react-router-dom'; // Importa useHistory
 import Instrumento from "../Entities/Intrumento";
 import Categoria from "../Entities/Categoria";
-import { getInstrumentoById , getAllCategorias, updateInstrumento } from '../Functions/FunctionsApi'; // Asumiendo que tienes una función para obtener un instrumento por su ID
+import { getInstrumentoById , getAllCategorias, updateInstrumento, createInstrumento } from '../Functions/FunctionsApi'; // Asumiendo que tienes una función para obtener un instrumento por su ID
 import NavBar from './NavBar';
 
 interface Props {}
@@ -13,19 +13,36 @@ const Form: React.FC<Props> = () => {
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [loading, setLoading] = useState<boolean>(true); // Bandera de carga
     const navigate = useNavigate();
+    const [imagenURL, setImagenURL] = useState<string | null>(null);
 
     
 
     useEffect(() => {
         const cargarInstrumento = async () => {
             try {
-                const instrumentoData = await getInstrumentoById(parseInt(String(id))); // Convertir el ID a número y obtener el instrumento correspondiente
-                setInstrumento(instrumentoData);
+                if (id !== "0") { // Verifica si el ID no es 0
+                    const instrumentoData = await getInstrumentoById(parseInt(String(id))); // Convertir el ID a número y obtener el instrumento correspondiente
+                    setInstrumento(instrumentoData);
+                } else {
+                    setInstrumento({
+                        id:0,
+                        instrumento: '',
+                        marca: '',
+                        modelo: '',
+                        imagen:'',
+                        precio: '',
+                        costo_envio: '',
+                        cantidad_vendida: '',
+                        descripcion: '',
+                        id_categoria: { id: 0, denominacion: '' } // Asignar un objeto vacío o con un valor predeterminado
+                    });
+                    setLoading(false); // Cuando se establece el instrumento vacío, cambia la bandera de carga a false
+                }
             } catch (error) {
                 console.error('Error al cargar el instrumento:', error);
             }
         };
-
+    
         const cargarCategorias = async () => {
             try {
                 const categoriasData = await getAllCategorias();
@@ -35,7 +52,7 @@ const Form: React.FC<Props> = () => {
                 console.error('Error al cargar las categorías:', error);
             }
         };
-
+    
         if (id) {
             cargarInstrumento(); // Cargar el instrumento solo si hay un ID en la URL
             cargarCategorias(); // Cargar las categorías
@@ -44,25 +61,47 @@ const Form: React.FC<Props> = () => {
 
     // Dentro del componente Form
 
-const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = event.target;
-    if (name === "id_categoria") {
-        // Si estás actualizando la categoría, busca la categoría correspondiente en el estado de categorías y actualiza el estado del instrumento
-        const selectedCategoria = categorias.find(categoria => categoria.id === parseInt(value));
-        if (selectedCategoria) {
-            setInstrumento(prevState => ({
-                ...prevState!,
-                id_categoria: selectedCategoria // Actualiza la categoría seleccionada
-            }));
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = event.target;
+    
+        // Cast explícito para asegurarnos de que event.target sea tratado como un HTMLInputElement
+        const inputElement = event.target as HTMLInputElement;
+    
+        // Comprobamos si el input es de tipo "file" y si tiene archivos seleccionados
+        if (inputElement.type === "file" && inputElement.files && inputElement.files.length > 0) {
+            const file = inputElement.files[0];
+    
+            // Creamos un FileReader para leer el contenido del archivo
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Cuando se complete la lectura, actualizamos el estado del instrumento con la URL de la imagen
+                setInstrumento(prevState => ({
+                    ...prevState!,
+                    imagen: e.target!.result as string
+                }));
+                // También actualizamos el estado de la imagenURL con la URL de la imagen
+                setImagenURL(e.target!.result as string);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // Si no es un input de tipo "file", o no tiene archivos seleccionados, actualizamos el estado del instrumento como antes
+            if (name === "id_categoria") {
+                const selectedCategoria = categorias.find(categoria => categoria.id === parseInt(value));
+                if (selectedCategoria) {
+                    setInstrumento(prevState => ({
+                        ...prevState!,
+                        id_categoria: selectedCategoria
+                    }));
+                }
+            } else {
+                setInstrumento(prevState => ({
+                    ...prevState!,
+                    [name]: value
+                }));
+            }
         }
-    } else {
-        // Para otros campos, simplemente actualiza el estado del instrumento
-        setInstrumento(prevState => ({
-            ...prevState!,
-            [name]: value
-        }));
-    }
-};
+    };
+    
 
 
 
@@ -85,6 +124,7 @@ const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaEl
             } catch (error) {
                 console.error('Error al actualizar el instrumento:', error);
                 // Aquí podrías manejar cualquier error que ocurra durante la actualización del instrumento
+                console.log(error);
             }
         } else {
             console.error('El instrumento es null.');
@@ -92,7 +132,26 @@ const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaEl
         }
     };
     
+    const handleSubmitCrear = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
     
+        if (instrumento) {
+            try {
+                const success = await createInstrumento(instrumento);
+                if (success) {
+                    console.log('¡Instrumento creado correctamente!');
+                    alert("Instrumento creado con éxito!");
+                    navigate("/grilla");
+                } else {
+                    console.error('Error al crear el instrumento.');
+                }
+            } catch (error) {
+                console.error('Error al crear el instrumento:', error);
+            }
+        } else {
+            console.error('El instrumento es null.');
+        }
+    };
     
     
 
@@ -105,7 +164,7 @@ const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaEl
         <>
         <NavBar />
         <div className='mt-4'>
-            <form onSubmit={handleSubmit}>
+        <form onSubmit={instrumento.id === 0 ? handleSubmitCrear : handleSubmit}>
                 <label htmlFor="instrumento">Instrumento: </label>
                 <input type="text" name="instrumento" value={instrumento.instrumento} onChange={handleChange}/><br /><br />
                 <label htmlFor="marca">Marca: </label>
@@ -114,6 +173,9 @@ const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaEl
                 <input type="text" name="modelo" value={instrumento.modelo} onChange={handleChange}/><br /><br />
                 <label htmlFor="precio">Precio: </label>
                 <input type="text" name="precio" value={instrumento.precio} onChange={handleChange}/><br /><br />
+                <label htmlFor="imagen">Imagen: {instrumento.imagen}</label><br />
+                <input type="file" name="imagen" accept="image/*" onChange={handleChange} /><br /><br />
+                <img src={imagenURL || ''} alt="Imagen seleccionada" />
                 <label htmlFor="costo-de-envio">Costo de envio: </label>
                 <input type="text" name="costo_envio" value={instrumento.costo_envio} onChange={handleChange}/><br /><br />
                 <label htmlFor="cantidad-vendida">Cantidad vendida: </label>
@@ -125,7 +187,11 @@ const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaEl
                         <option key={categoria.id} value={categoria.id}>{categoria.denominacion}</option>
                     ))}
                 </select><br /><br />
-                <button type='submit' className='btn btn-success'>Modificar</button>
+                {instrumento.id === 0 ? (
+                    <button type='submit' className='btn btn-primary'>Crear</button>
+                ) : (
+                    <button type='submit' className='btn btn-success'>Modificar</button>
+                )}
             </form>
         </div>
         </>

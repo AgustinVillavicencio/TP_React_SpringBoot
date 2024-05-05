@@ -4,9 +4,9 @@ export default interface Instrumento {
     marca: string;
     modelo: string;
     imagen: string;
-    precio: number; // Cambiado a number, ya que parece ser un número
+    precio: string;
     costo_envio: string;
-    cantidad_vendida: number; // Cambiado a number, ya que parece ser un número
+    cantidad_vendida: string;
     descripcion: string;
     id_categoria: {
         id: number;

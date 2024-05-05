@@ -8,12 +8,12 @@ interface Props {
 // Definición del componente funcional InfoDetails que recibe las propiedades definidas en la interfaz Props
 const InfoDetails: React.FC<Props> = (props: Props) => {
   // Lógica para determinar el mensaje de costo de envío
-  const infoCostoEnvio = props.instrumento?.costoEnvio != 'G' && props.instrumento?.costoEnvio != '0'
-      ? "Costo de Envio interior Argentina: " + props.instrumento?.costoEnvio
+  const infoCostoEnvio = props.instrumento?.costo_envio != 'G' && props.instrumento?.costo_envio != '0'
+      ? "Costo de Envio interior Argentina: " + props.instrumento?.costo_envio
       : "Envío gratis a todo el país";
 
   // Determina la clase CSS según el tipo de costo de envío
-  const costoClassName = props.instrumento?.costoEnvio != 'G' && props.instrumento?.costoEnvio != '0'
+  const costoClassName = props.instrumento?.costo_envio != 'G' && props.instrumento?.costo_envio != '0'
       ? 'CostoInterior mt-4'
       : 'CostoGratis mt-4 ';
 
@@ -21,7 +21,7 @@ const InfoDetails: React.FC<Props> = (props: Props) => {
   return (
       <div className='infoDetalle'>
           {/* Muestra la cantidad vendida */}
-          <p>{props.instrumento?.cantidadVendida} vendidos</p>
+          <p>{props.instrumento?.cantidad_vendida} vendidos</p>
           {/* Muestra el nombre del instrumento */}
           <h1 className='titleInformacion'>{props.instrumento?.instrumento}</h1>
           {/* Muestra el precio del instrumento */}
@@ -32,7 +32,7 @@ const InfoDetails: React.FC<Props> = (props: Props) => {
           <p>Modelo: {props.instrumento?.modelo}</p>
           {/* Muestra el costo de envío y la imagen del camión si corresponde */}
           <p className={costoClassName}>
-              {props.instrumento?.costoEnvio == 'G' || props.instrumento?.costoEnvio == '0' ? (<img src="../src/assets/img/camion.png" alt="camion" />) : ''}
+              {props.instrumento?.costo_envio == 'G' || props.instrumento?.costo_envio == '0' ? (<img src="../src/assets/img/camion.png" alt="camion" />) : ''}
               {infoCostoEnvio}
           </p>
       </div>

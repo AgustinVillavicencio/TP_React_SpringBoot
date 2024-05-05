@@ -60,6 +60,7 @@ const handleModificar = (id: number) => {
     return (
         <>
             <NavBar />
+            <button className='btn btn-primary mt-4' onClick={()=> handleModificar(0)}>Nuevo</button>
             <div className='mt-4'>
                 <table>
                     <thead>
