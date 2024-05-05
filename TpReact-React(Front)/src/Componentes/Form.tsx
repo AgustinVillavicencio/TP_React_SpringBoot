@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, Navigate } from 'react-router-dom'; // Importa useHistory
 import Instrumento from "../Entities/Intrumento";
 import Categoria from "../Entities/Categoria";
-import { getInstrumentoById , getAllCategorias, createInstrumento } from '../Functions/FunctionsApi'; // Asumiendo que tienes una función para obtener un instrumento por su ID
+import { getInstrumentoById , getAllCategorias, updateInstrumento } from '../Functions/FunctionsApi'; // Asumiendo que tienes una función para obtener un instrumento por su ID
 import NavBar from './NavBar';
 
 interface Props {}
@@ -12,6 +12,9 @@ const Form: React.FC<Props> = () => {
     const [instrumento, setInstrumento] = useState<Instrumento | null>(null);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [loading, setLoading] = useState<boolean>(true); // Bandera de carga
+    const navigate = useNavigate();
+
+    
 
     useEffect(() => {
         const cargarInstrumento = async () => {
@@ -39,13 +42,59 @@ const Form: React.FC<Props> = () => {
         }
     }, [id]);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = event.target;
+    // Dentro del componente Form
+
+const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = event.target;
+    if (name === "id_categoria") {
+        // Si estás actualizando la categoría, busca la categoría correspondiente en el estado de categorías y actualiza el estado del instrumento
+        const selectedCategoria = categorias.find(categoria => categoria.id === parseInt(value));
+        if (selectedCategoria) {
+            setInstrumento(prevState => ({
+                ...prevState!,
+                id_categoria: selectedCategoria // Actualiza la categoría seleccionada
+            }));
+        }
+    } else {
+        // Para otros campos, simplemente actualiza el estado del instrumento
         setInstrumento(prevState => ({
             ...prevState!,
             [name]: value
         }));
+    }
+};
+
+
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+    
+        if (instrumento) { // Verifica si instrumento no es null
+            try {
+    
+                const success = await updateInstrumento(instrumento); // Llama a la función para actualizar el instrumento
+                if (success) {
+                    console.log('¡Instrumento actualizado correctamente!');
+                    console.log('JSON enviado:', JSON.stringify(instrumento)); // Imprime el JSON enviado
+                    alert("Instrumento modificado con exito!")
+                    navigate("/grilla");
+                } else {
+                    console.error('Error al actualizar el instrumento.');
+                    // Aquí podrías mostrar un mensaje de error al usuario
+                }
+            } catch (error) {
+                console.error('Error al actualizar el instrumento:', error);
+                // Aquí podrías manejar cualquier error que ocurra durante la actualización del instrumento
+            }
+        } else {
+            console.error('El instrumento es null.');
+            // Aquí podrías manejar el caso en el que instrumento sea null
+        }
     };
+    
+    
+    
+    
 
     
     if (loading || !instrumento) {
@@ -56,7 +105,7 @@ const Form: React.FC<Props> = () => {
         <>
         <NavBar />
         <div className='mt-4'>
-            <form action="">
+            <form onSubmit={handleSubmit}>
                 <label htmlFor="instrumento">Instrumento: </label>
                 <input type="text" name="instrumento" value={instrumento.instrumento} onChange={handleChange}/><br /><br />
                 <label htmlFor="marca">Marca: </label>
@@ -71,7 +120,7 @@ const Form: React.FC<Props> = () => {
                 <input type="text" name="cantidad_vendida" value={instrumento.cantidad_vendida} onChange={handleChange}/><br /><br />
                 <label htmlFor="descripcion">Descripcion: </label>
                 <textarea name="descripcion" id="descripcion" cols={90} rows={3} value={instrumento.descripcion} onChange={handleChange}></textarea><br /><br />
-                <select name="id_categoria" id="categoria" value={instrumento.id_categoria.id} onChange={handleChange}>
+                <select name="id_categoria" id="categoria" value={instrumento.id_categoria ? instrumento.id_categoria.id : ''} onChange={handleChange}>
                     {categorias.map(categoria => (
                         <option key={categoria.id} value={categoria.id}>{categoria.denominacion}</option>
                     ))}

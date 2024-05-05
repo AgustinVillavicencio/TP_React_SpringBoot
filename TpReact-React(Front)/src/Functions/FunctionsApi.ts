@@ -119,3 +119,42 @@ export async function getAllCategorias() {
     // Retorna los datos obtenidos de la API
     return data;
 }
+
+export async function updateInstrumento(instrumentoData: Instrumento): Promise<boolean> {
+    // Creamos una copia del objeto instrumentoData sin la propiedad "denominacion" en id_categoria
+    console.log(instrumentoData)
+
+    const instrumentoSinDenominacion = {
+        ...instrumentoData,
+        id_categoria: {
+            id: instrumentoData.id_categoria.id
+        }
+    };
+
+    const url: string = `http://localhost:8080/api/instrumentos/${instrumentoData.id}`;
+    console.log(instrumentoSinDenominacion);
+    try {
+        const response = await fetch(url, {
+            method: 'PUT', // Usamos el método PUT para actualizar el instrumento
+            headers: {
+                "Content-Type": 'application/json',
+                "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+            },
+            mode: 'cors', // Modo CORS para permitir solicitudes entre dominios
+            body: JSON.stringify(instrumentoSinDenominacion) // Convertimos el objeto de datos modificado en formato JSON
+        });
+
+        if (response.ok) {
+            // Si la actualización es exitosa, retornamos true
+            return true;
+        } else {
+            // Si hay algún error en la actualización, lanzamos una excepción con el mensaje de error
+            const errorMessage: string = "Error al actualizar el instrumento";
+            throw new Error(errorMessage);
+        }
+    } catch (error:any) {
+        // Si hay algún error en la solicitud, lanzamos una excepción con el mensaje de error
+        throw new Error(error.message);
+    }
+}
+

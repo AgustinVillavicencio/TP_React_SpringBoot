@@ -40,6 +40,27 @@ public class InstrumentoController {
     public void remove(@PathVariable String id){
         iInstrumentoService.remove(Long.parseLong(id));
     }
+
+    @PutMapping("/api/instrumentos/{id}")
+    public void update(@PathVariable Long id, @RequestBody Instrumento instrumento){
+        // Verificar si el instrumento con el ID dado existe en la base de datos
+        Instrumento existingInstrumento = iInstrumentoService.getById(id);
+        if (existingInstrumento != null) {
+            // Asignar el ID al instrumento que se va a actualizar
+            instrumento.setId(id);
+
+            // Buscar la categoría por su ID y establecerla en el instrumento
+            Categoria categoria = iCategoriaService.getById(instrumento.getId_categoria().getId());
+            instrumento.setId_categoria(categoria);
+
+            // Guardar el instrumento actualizado
+            iInstrumentoService.save(instrumento);
+        } else {
+            // Si no se encuentra el instrumento con el ID dado, lanzar una excepción o manejar el error según sea necesario
+            throw new RuntimeException("El instrumento con ID " + id + " no existe.");
+        }
+    }
+
 }
 
 
