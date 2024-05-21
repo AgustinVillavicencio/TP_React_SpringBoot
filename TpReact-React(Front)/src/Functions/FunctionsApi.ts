@@ -1,4 +1,11 @@
 import Instrumento from "../Entities/Instrumento";
+import Pedido from "../Entities/Pedido";
+import PedidoDetalle from "../Entities/PedidoDetalle";
+
+
+//------------------------------------------------------------------------------------------------------
+//---------------------------------------FUNCIONES API INSTRUMENTOS-------------------------------------
+//------------------------------------------------------------------------------------------------------
 // Función asincrónica para obtener todos los instrumentos
 export async function getAll() {
     // URL de la API para obtener todos los instrumentos
@@ -122,7 +129,6 @@ export async function getAllCategorias() {
 
 export async function updateInstrumento(instrumentoData: Instrumento): Promise<boolean> {
     // Creamos una copia del objeto instrumentoData sin la propiedad "denominacion" en id_categoria
-    console.log(instrumentoData)
 
     const instrumentoSinDenominacion = {
         ...instrumentoData,
@@ -132,7 +138,6 @@ export async function updateInstrumento(instrumentoData: Instrumento): Promise<b
     };
 
     const url: string = `http://localhost:8080/api/instrumentos/${instrumentoData.id}`;
-    console.log(instrumentoSinDenominacion);
     try {
         const response = await fetch(url, {
             method: 'PUT', // Usamos el método PUT para actualizar el instrumento
@@ -158,3 +163,269 @@ export async function updateInstrumento(instrumentoData: Instrumento): Promise<b
     }
 }
 
+
+//------------------------------------------------------------------------------------------------------
+//---------------------------------------FUNCIONES API PEDIDODETALLES-----------------------------------
+//------------------------------------------------------------------------------------------------------
+
+export async function getAllPedidoDetalle() {
+    // URL de la API para obtener todos los pedidoDetalles
+    const url = "http://localhost:8080/api/pedidoDetalles";
+
+    // Realiza una solicitud GET a la API
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            "Content-Type": 'application/json',
+            "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+        },
+        mode: 'cors' // Modo CORS para permitir solicitudes entre dominios
+    });
+
+    // Extrae los datos de la respuesta como JSON
+    const data = await response.json();
+
+    // Retorna los datos obtenidos de la API
+    return data;
+}
+
+// Función asincrónica para obtener un pedido por su ID
+export async function getPedidoDetalleById(id: Number) {
+    // URL de la API para obtener un pedidoDetalle por su ID
+    const url = `http://localhost:8080/api/pedidoDetalles/${id}`;
+
+    // Realiza una solicitud GET a la API
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            "Content-Type": 'application/json',
+            "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+        },
+        mode: 'cors' // Modo CORS para permitir solicitudes entre dominios
+    });
+
+    // Extrae los datos de la respuesta como JSON y los convierte en un objeto de tipo pedidoDetalle
+    const data = await response.json();
+
+    // Retorna el pedido obtenido de la API
+    return data as Pedido; // Se especifica el tipo de retorno como pedidoDetalle
+}
+
+export async function deletePedidoDetalle(id: number) {
+    const url = `http://localhost:8080/api/pedidoDetalles/${id}`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                "Content-Type": 'application/json',
+                "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+            },
+            mode: 'cors' // Modo CORS para permitir solicitudes entre dominios
+        });
+
+        if (response.ok) {
+            // Si la eliminación es exitosa, retornamos true
+            return true;
+        } else {
+            // Si hay algún error en la eliminación, lanzamos una excepción con el mensaje de error
+            const errorMessage = `Error al eliminar el pedidoDetalle con ID ${id}`;
+            throw new Error(errorMessage);
+        }
+    } catch (error:any) {
+        // Si hay algún error en la solicitud, lanzamos una excepción con el mensaje de error
+        throw new Error(error.message);
+    }
+}
+
+export async function createPedidoDetalle(pedidoDetalleData: PedidoDetalle): Promise<boolean> {
+    const url: string = "http://localhost:8080/api/pedidoDetalles";
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                "Content-Type": 'application/json',
+                "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+            },
+            mode: 'cors', // Modo CORS para permitir solicitudes entre dominios
+            body: JSON.stringify(pedidoDetalleData) // Convierte el objeto de datos en formato JSON
+        });
+
+        if (response.ok) {
+            // Si la creación es exitosa, retornamos true
+            return true;
+        } else {
+            // Si hay algún error en la creación, lanzamos una excepción con el mensaje de error
+            const errorMessage: string = "Error al crear el pedidoDetalle";
+            throw new Error(errorMessage);
+        }
+    } catch (error:any) {
+        // Si hay algún error en la solicitud, lanzamos una excepción con el mensaje de error
+        throw new Error(error.message);
+    }
+}
+
+export async function updatePedidoDetalle(pedidoDetalleData: PedidoDetalle): Promise<boolean> {
+    
+    console.log(pedidoDetalleData)
+
+
+    const url: string = `http://localhost:8080/api/pedidoDetalles/${pedidoDetalleData.id}`;
+    try {
+        const response = await fetch(url, {
+            method: 'PUT', // Usamos el método PUT para actualizar el pedido
+            headers: {
+                "Content-Type": 'application/json',
+                "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+            },
+            mode: 'cors', // Modo CORS para permitir solicitudes entre dominios
+            body: JSON.stringify(pedidoDetalleData) // Convertimos el objeto de datos modificado en formato JSON
+        });
+
+        if (response.ok) {
+            // Si la actualización es exitosa, retornamos true
+            return true;
+        } else {
+            // Si hay algún error en la actualización, lanzamos una excepción con el mensaje de error
+            const errorMessage: string = "Error al actualizar el pedidoDetalle";
+            throw new Error(errorMessage);
+        }
+    } catch (error:any) {
+        // Si hay algún error en la solicitud, lanzamos una excepción con el mensaje de error
+        throw new Error(error.message);
+    }
+}
+
+//------------------------------------------------------------------------------------------------------
+//---------------------------------------FUNCIONES API PEDIDOS------------------------------------------
+//------------------------------------------------------------------------------------------------------
+
+export async function getAllPedidos() {
+    // URL de la API para obtener todos los pedidos
+    const url = "http://localhost:8080/api/pedidos";
+
+    // Realiza una solicitud GET a la API
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            "Content-Type": 'application/json',
+            "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+        },
+        mode: 'cors' // Modo CORS para permitir solicitudes entre dominios
+    });
+
+    // Extrae los datos de la respuesta como JSON
+    const data = await response.json();
+
+    // Retorna los datos obtenidos de la API
+    return data;
+}
+
+// Función asincrónica para obtener un pedido por su ID
+export async function getPedidoById(id: Number) {
+    // URL de la API para obtener un pedido por su ID
+    const url = `http://localhost:8080/api/pedidos/${id}`;
+
+    // Realiza una solicitud GET a la API
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            "Content-Type": 'application/json',
+            "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+        },
+        mode: 'cors' // Modo CORS para permitir solicitudes entre dominios
+    });
+
+    // Extrae los datos de la respuesta como JSON y los convierte en un objeto de tipo pedido
+    const data = await response.json();
+
+    // Retorna el pedido obtenido de la API
+    return data as Pedido; // Se especifica el tipo de retorno como pedido
+}
+
+export async function deletePedido(id: number) {
+    const url = `http://localhost:8080/api/pedidos/${id}`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                "Content-Type": 'application/json',
+                "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+            },
+            mode: 'cors' // Modo CORS para permitir solicitudes entre dominios
+        });
+
+        if (response.ok) {
+            // Si la eliminación es exitosa, retornamos true
+            return true;
+        } else {
+            // Si hay algún error en la eliminación, lanzamos una excepción con el mensaje de error
+            const errorMessage = `Error al eliminar el pedido con ID ${id}`;
+            throw new Error(errorMessage);
+        }
+    } catch (error:any) {
+        // Si hay algún error en la solicitud, lanzamos una excepción con el mensaje de error
+        throw new Error(error.message);
+    }
+}
+
+export async function createPedido(pedidoData: Pedido): Promise<boolean> {
+    const url: string = "http://localhost:8080/api/pedidos";
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                "Content-Type": 'application/json',
+                "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+            },
+            mode: 'cors', // Modo CORS para permitir solicitudes entre dominios
+            body: JSON.stringify(pedidoData) // Convierte el objeto de datos en formato JSON
+        });
+
+        if (response.ok) {
+            // Si la creación es exitosa, retornamos true
+            return true;
+        } else {
+            // Si hay algún error en la creación, lanzamos una excepción con el mensaje de error
+            const errorMessage: string = "Error al crear el pedido";
+            throw new Error(errorMessage);
+        }
+    } catch (error:any) {
+        // Si hay algún error en la solicitud, lanzamos una excepción con el mensaje de error
+        throw new Error(error.message);
+    }
+}
+
+export async function updatePedido(pedidoData: Pedido): Promise<boolean> {
+    
+    console.log(pedidoData)
+
+
+    const url: string = `http://localhost:8080/api/pedidos/${pedidoData.id}`;
+    try {
+        const response = await fetch(url, {
+            method: 'PUT', // Usamos el método PUT para actualizar el pedido
+            headers: {
+                "Content-Type": 'application/json',
+                "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+            },
+            mode: 'cors', // Modo CORS para permitir solicitudes entre dominios
+            body: JSON.stringify(pedidoData) // Convertimos el objeto de datos modificado en formato JSON
+        });
+
+        if (response.ok) {
+            // Si la actualización es exitosa, retornamos true
+            return true;
+        } else {
+            // Si hay algún error en la actualización, lanzamos una excepción con el mensaje de error
+            const errorMessage: string = "Error al actualizar el pedido";
+            throw new Error(errorMessage);
+        }
+    } catch (error:any) {
+        // Si hay algún error en la solicitud, lanzamos una excepción con el mensaje de error
+        throw new Error(error.message);
+    }
+}
