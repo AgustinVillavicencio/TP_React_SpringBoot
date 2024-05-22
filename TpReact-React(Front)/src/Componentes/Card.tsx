@@ -13,7 +13,7 @@ const Card: React.FC<Props> = (props: Props) => {
     const rutaImagen = props.info.imagen.startsWith('http') ? props.info.imagen : `../src/assets/img/${props.info.imagen}`;
 
     // Lógica para determinar el mensaje de costo de envío
-    const infoCostoEnvio = props.info.costo_envio !== 'G'
+    const infoCostoEnvio = props.info.costo_envio !== 'G' && props.info.costo_envio !== '0'
         ? "Costo de Envio interior Argentina: " + props.info.costo_envio
         : "Envío gratis a todo el país";
 

@@ -1,8 +1,9 @@
 import Instrumento from "../Entities/Instrumento";
+import "../Estilos/InfoDetalle.css"
 
 // Definición de la interfaz Props que describe las propiedades esperadas para el componente InfoDetails
 interface Props {
-  instrumento: Instrumento;  // Instrumento recibido como propiedad
+  instrumento?: Instrumento;  // Instrumento recibido como propiedad
 }
 
 // Definición del componente funcional InfoDetails que recibe las propiedades definidas en la interfaz Props
@@ -25,6 +26,7 @@ const InfoDetails: React.FC<Props> = (props: Props) => {
           {/* Muestra el nombre del instrumento */}
           <h1 className='titleInformacion'>{props.instrumento?.instrumento}</h1>
           {/* Muestra el precio del instrumento */}
+          <p>{props.instrumento?.descripcion}</p>
           <p>$ {props.instrumento?.precio}</p>
           {/* Muestra la marca del instrumento */}
           <p>Marca: {props.instrumento?.marca}</p>
