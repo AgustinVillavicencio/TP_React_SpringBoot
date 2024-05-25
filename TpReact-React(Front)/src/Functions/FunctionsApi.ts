@@ -49,26 +49,33 @@ export async function getInstrumentoById(id: Number) {
 }
 
  // Función generica para enviar datos mediante una solicitud POST
- export async function postData<T>(path: string, data: T): Promise<T> {
-    console.log(data);
-      try {
-        const response = await fetch(`${path}`, {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          mode: 'cors',
-          body: JSON.stringify(data), // Convierte los datos a JSON y los envía en el cuerpo de la solicitud
-        });
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response.json(); // Retorna los datos en formato JSON
-      } catch (error) {
-        return Promise.reject(error); // Rechaza la promesa con el error
-      }
+// Función genérica para enviar datos mediante una solicitud POST
+export async function postData<T>(url: string, data: any): Promise<T> {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+  
+    const text = await response.text();
+    if (!text) {
+      // Manejar la respuesta vacía aquí
+      console.warn('Empty response from server');
+      return {} as T;  // Devolver un objeto vacío del tipo esperado
+    }
+  
+    const result = JSON.parse(text) as T;
+    return result;
+  }
+  
+  
+
+
     
     // Función generica para actualizar datos mediante una solicitud PUT
    export async function putData<T>(path: string, data: T): Promise<T> {
@@ -110,24 +117,25 @@ export async function getInstrumentoById(id: Number) {
       }
     }
   
-    export async function PostDetalleData<T>(path: string, data: T[]) {
-      console.log(data);
-      try {
-        const response = await fetch(`${path}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          mode: 'cors',
-          body: JSON.stringify(data),
-        });
-        if (!response.ok) {
-          throw Error(response.statusText);
+    export async function PostDetalleData<T>(path: string, data: T[]): Promise<T[]> {
+        console.log(data);
+        try {
+            const response = await fetch(`${path}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                mode: 'cors',
+                body: JSON.stringify(data),
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json(); // Retorna los datos en formato JSON
+        } catch (error: any) {
+            console.error(error); // Imprime el error en la consola
+            throw error; // Rechaza la promesa con el error
         }
-        return response.json(); // Retorna los datos en formato JSON
-      } catch (error) {
-        console.error(error); // Imprime el error en la consola
-      }
     }
 
 

@@ -48,11 +48,13 @@ const Card: React.FC<Props> = (props: Props) => {
                     <p className='mt-4 sales'>{props.info.cantidadVendida} vendidos</p>
                 </div>
                 {/* Enlace al detalle del instrumento */}
-                <a href={`instrumentos/${props.info.id}`}>
-                    Detalle
-                </a>
-                <button className="btn btn-info" onClick={()=>addCarrito(props.info)}>Añadir a carrito</button>
-                <button className="btn btn-info" onClick={()=>removeItemCarrito(props.info)}>Sacar de carrito</button>
+                <div className='column-container'>
+                    <a href={`instrumentos/${props.info.id}`}>
+                        Detalle
+                    </a>
+                    <button className="btn btn-success" onClick={()=>addCarrito(props.info)}>Añadir a carrito</button>
+                    <button className="btn btn-danger" onClick={()=>removeItemCarrito(props.info)}>Sacar de carrito</button>
+                </div>
             </div>
         </>
     );

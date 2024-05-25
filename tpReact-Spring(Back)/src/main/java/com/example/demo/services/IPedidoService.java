@@ -8,5 +8,5 @@ public interface IPedidoService {
     List<Pedido> getAll();
     Pedido getById(Long id);
     void remove(Long id);
-    void save(Pedido pedido);
+    Pedido save(Pedido pedido);
 }

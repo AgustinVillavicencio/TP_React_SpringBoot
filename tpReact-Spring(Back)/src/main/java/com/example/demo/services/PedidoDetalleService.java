@@ -28,7 +28,13 @@ public class PedidoDetalleService implements IPedidoDetalleService{
     }
 
     @Override
-    public void save(PedidoDetalle pedidoDetalle){
+    public PedidoDetalle save(PedidoDetalle pedidoDetalle){
         pedidoDetalleRepository.save(pedidoDetalle);
+        return pedidoDetalle;
+    }
+    @Override
+    public List<PedidoDetalle> saveAll(List<PedidoDetalle> pedidoDetalles) {
+        pedidoDetalleRepository.saveAll(pedidoDetalles);
+        return pedidoDetalles;
     }
 }

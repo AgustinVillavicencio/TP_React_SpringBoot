@@ -8,5 +8,6 @@ public interface IPedidoDetalleService {
     List<PedidoDetalle> getAll();
     PedidoDetalle getById(Long id);
     void remove(Long id);
-    void save(PedidoDetalle instrumento);
+    PedidoDetalle save(PedidoDetalle instrumento);
+    public List<PedidoDetalle> saveAll(List<PedidoDetalle> pedidoDetalles);
 }
