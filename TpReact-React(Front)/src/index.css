@@ -142,7 +142,7 @@ grid-row: 2/3;
   border-radius: 15px; /* Bordes redondeados */
   overflow: hidden;
   margin-top: -50px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0); /* Sombra sutil */
 }
 
 .carousel-item img {

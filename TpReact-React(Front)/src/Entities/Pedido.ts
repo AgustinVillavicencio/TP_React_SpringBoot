@@ -1,5 +1,5 @@
-export default interface Pedido {
-    id: number;
-    fecha_pedido: Date;
-    total_pedido: number;
+export default class Pedido {
+    id: number=0;
+    fechaPedido:Date= new Date();
+    totalPedido: number=0;
 }

@@ -21,8 +21,8 @@ public class InstrumentoController {
     @PostMapping("/api/instrumentos")
     public void save(@RequestBody Instrumento instrumento){
         // Buscar la categoría por su ID y establecerla en el instrumento
-        Categoria categoria = iCategoriaService.getById(instrumento.getId_categoria().getId());
-        instrumento.setId_categoria(categoria);
+        Categoria categoria = iCategoriaService.getById(instrumento.getCategoria().getId());
+        instrumento.setCategoria(categoria);
 
         // Guardar el instrumento
         iInstrumentoService.save(instrumento);
@@ -50,8 +50,8 @@ public class InstrumentoController {
             instrumento.setId(id);
 
             // Buscar la categoría por su ID y establecerla en el instrumento
-            Categoria categoria = iCategoriaService.getById(instrumento.getId_categoria().getId());
-            instrumento.setId_categoria(categoria);
+            Categoria categoria = iCategoriaService.getById(instrumento.getCategoria().getId());
+            instrumento.setCategoria(categoria);
 
             // Guardar el instrumento actualizado
             iInstrumentoService.save(instrumento);

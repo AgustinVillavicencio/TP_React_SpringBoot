@@ -1,6 +1,4 @@
 import Instrumento from "../Entities/Instrumento";
-import Pedido from "../Entities/Pedido";
-import PedidoDetalle from "../Entities/PedidoDetalle";
 
 
 //------------------------------------------------------------------------------------------------------
@@ -49,6 +47,89 @@ export async function getInstrumentoById(id: Number) {
     // Retorna el instrumento obtenido de la API
     return data as Instrumento; // Se especifica el tipo de retorno como Instrumento
 }
+
+ // Función generica para enviar datos mediante una solicitud POST
+ export async function postData<T>(path: string, data: T): Promise<T> {
+    console.log(data);
+      try {
+        const response = await fetch(`${path}`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          mode: 'cors',
+          body: JSON.stringify(data), // Convierte los datos a JSON y los envía en el cuerpo de la solicitud
+        });
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response.json(); // Retorna los datos en formato JSON
+      } catch (error) {
+        return Promise.reject(error); // Rechaza la promesa con el error
+      }
+    }
+    
+    // Función generica para actualizar datos mediante una solicitud PUT
+   export async function putData<T>(path: string, data: T): Promise<T> {
+      try {
+        const response = await fetch(`${path}`, {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          mode: 'cors',
+          body: JSON.stringify(data), // Convierte los datos a JSON y los envía en el cuerpo de la solicitud
+        });
+    
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response.json(); // Retorna los datos en formato JSON
+      } catch (error) {
+        return Promise.reject(error); // Rechaza la promesa con el error
+      }
+    }
+    
+    // Función generica para eliminar datos mediante una solicitud DELETE
+    export async function deleteData(path: string) {
+      try {
+        const response = await fetch(`${path}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          mode: 'cors'
+        });
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+      } catch (error) {
+        console.error(error); // Imprime el error en la consola
+      }
+    }
+  
+    export async function PostDetalleData<T>(path: string, data: T[]) {
+      console.log(data);
+      try {
+        const response = await fetch(`${path}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          mode: 'cors',
+          body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response.json(); // Retorna los datos en formato JSON
+      } catch (error) {
+        console.error(error); // Imprime el error en la consola
+      }
+    }
+
 
 export async function deleteInstrumento(id: number) {
     const url = `http://localhost:8080/api/instrumentos/${id}`;
@@ -133,7 +214,7 @@ export async function updateInstrumento(instrumentoData: Instrumento): Promise<b
     const instrumentoSinDenominacion = {
         ...instrumentoData,
         id_categoria: {
-            id: instrumentoData.id_categoria.id
+            id: instrumentoData.categoria?.id
         }
     };
 
@@ -162,7 +243,7 @@ export async function updateInstrumento(instrumentoData: Instrumento): Promise<b
         throw new Error(error.message);
     }
 }
-
+/*
 
 //------------------------------------------------------------------------------------------------------
 //---------------------------------------FUNCIONES API PEDIDODETALLES-----------------------------------
@@ -429,3 +510,5 @@ export async function updatePedido(pedidoData: Pedido): Promise<boolean> {
         throw new Error(error.message);
     }
 }
+
+*/

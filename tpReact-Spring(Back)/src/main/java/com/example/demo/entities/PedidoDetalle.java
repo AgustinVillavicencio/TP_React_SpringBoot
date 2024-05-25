@@ -19,9 +19,9 @@ public class PedidoDetalle {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_pedido")
-    private Pedido id_pedido;
+    private Pedido pedido;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_instrumento")
-    private Instrumento id_instrumento;
+    private Instrumento instrumento;
 }
