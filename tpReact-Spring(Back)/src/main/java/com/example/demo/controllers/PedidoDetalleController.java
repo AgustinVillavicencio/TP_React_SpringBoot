@@ -23,8 +23,23 @@ public class PedidoDetalleController {
     @Autowired
     private IInstrumentoService iInstrumentoService;
 
+    @PostMapping("/api/pedido_detalles/saveAll")
+    public List<PedidoDetalle> saveAll(@RequestBody List<PedidoDetalle> pedidoDetalles) {
+        // Iterar sobre cada pedidoDetalle y realizar las operaciones necesarias antes de guardarlos
+        for (PedidoDetalle pedidoDetalle : pedidoDetalles) {
+            Pedido pedido = iPedidoService.getById(pedidoDetalle.getPedido().getId());
+            pedidoDetalle.setPedido(pedido);
+
+            Instrumento instrumento = iInstrumentoService.getById(pedidoDetalle.getInstrumento().getId());
+            pedidoDetalle.setInstrumento(instrumento);
+        }
+
+        // Guardar todos los pedidoDetalles y devolver la lista completa
+        return iPedidoDetalleService.saveAll(pedidoDetalles);
+    }
+
     @PostMapping("/api/pedido_detalles/save")
-    public void save(@RequestBody PedidoDetalle pedidoDetalle){
+    public PedidoDetalle save(@RequestBody PedidoDetalle pedidoDetalle){
         // Buscar el pedido por su ID y establecerla en el pedidoDetalle
         Pedido pedido = iPedidoService.getById(pedidoDetalle.getPedido().getId());
         pedidoDetalle.setPedido(pedido);
@@ -34,7 +49,10 @@ public class PedidoDetalleController {
         pedidoDetalle.setInstrumento(instrumento);
 
         // Guardar el pedidoDetalle
-        iPedidoDetalleService.save(pedidoDetalle);
+        PedidoDetalle savedPedidoDetalle = iPedidoDetalleService.save(pedidoDetalle);
+
+        // Devolver el pedidoDetalle guardado
+        return savedPedidoDetalle;
     }
 
     @GetMapping("/api/pedido_detalles")

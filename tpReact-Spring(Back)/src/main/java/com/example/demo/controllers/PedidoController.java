@@ -15,9 +15,10 @@ public class PedidoController {
 
 
     @PostMapping("/api/pedidos/save")
-    public void save(@RequestBody Pedido instrumento){
-        // Guardar el instrumento
-        iPedidoService.save(instrumento);
+    public Pedido save(@RequestBody Pedido pedido){
+        // Guardar el pedido
+        Pedido savedPedido = iPedidoService.save(pedido);
+        return savedPedido;
     }
 
     @GetMapping("/api/pedidos")

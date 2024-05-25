@@ -169,3 +169,14 @@ grid-row: 2/3;
 .infoGeneral{
   margin-top: 40px;
 }
+
+.column-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; 
+}
+
+.column-container a,
+.column-container button {
+  margin-bottom: 10px;
+}
