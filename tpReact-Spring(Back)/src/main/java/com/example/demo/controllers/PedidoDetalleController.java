@@ -1,10 +1,8 @@
 package com.example.demo.controllers;
 
-import com.example.demo.entities.Categoria;
 import com.example.demo.entities.Instrumento;
 import com.example.demo.entities.Pedido;
 import com.example.demo.entities.PedidoDetalle;
-import com.example.demo.services.ICategoriaService;
 import com.example.demo.services.IInstrumentoService;
 import com.example.demo.services.IPedidoDetalleService;
 import com.example.demo.services.IPedidoService;
@@ -28,12 +26,12 @@ public class PedidoDetalleController {
     @PostMapping("/api/pedidoDetalles")
     public void save(@RequestBody PedidoDetalle pedidoDetalle){
         // Buscar el pedido por su ID y establecerla en el pedidoDetalle
-        Pedido pedido = iPedidoService.getById(pedidoDetalle.getId_pedido().getId());
-        pedidoDetalle.setId_pedido(pedido);
+        Pedido pedido = iPedidoService.getById(pedidoDetalle.getPedido().getId());
+        pedidoDetalle.setPedido(pedido);
 
         // Buscar el instrumento por su ID y establecerla en el pedidoDetalle
-        Instrumento instrumento = iInstrumentoService.getById(pedidoDetalle.getId_instrumento().getId());
-        pedidoDetalle.setId_instrumento(instrumento);
+        Instrumento instrumento = iInstrumentoService.getById(pedidoDetalle.getInstrumento().getId());
+        pedidoDetalle.setInstrumento(instrumento);
 
         // Guardar el pedidoDetalle
         iPedidoDetalleService.save(pedidoDetalle);
@@ -61,12 +59,12 @@ public class PedidoDetalleController {
             pedidoDetalle.setId(id);
 
             // Buscar la categoría por su ID y establecerla en el instrumento
-            Pedido pedido = iPedidoService.getById(pedidoDetalle.getId_pedido().getId());
-            pedidoDetalle.setId_pedido(pedido);
+            Pedido pedido = iPedidoService.getById(pedidoDetalle.getPedido().getId());
+            pedidoDetalle.setPedido(pedido);
 
             // Buscar la categoría por su ID y establecerla en el instrumento
-            Instrumento instrumento = iInstrumentoService.getById(pedidoDetalle.getId_instrumento().getId());
-            pedidoDetalle.setId_instrumento(instrumento);
+            Instrumento instrumento = iInstrumentoService.getById(pedidoDetalle.getInstrumento().getId());
+            pedidoDetalle.setInstrumento(instrumento);
 
             // Guardar el instrumento actualizado
             iPedidoDetalleService.save(pedidoDetalle);

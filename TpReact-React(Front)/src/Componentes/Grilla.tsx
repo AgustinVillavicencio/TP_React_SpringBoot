@@ -5,6 +5,7 @@ import { deleteInstrumento, getAll, getAllCategorias } from '../Functions/Functi
 import NavBar from './NavBar';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Button, Table, Form } from 'react-bootstrap';
+//import { FormControlProps } from 'react-bootstrap';
 
 interface Props {}
 
@@ -48,8 +49,9 @@ const Grilla: React.FC<Props> = () => {
         navigate(`/formulario/${id}`);
     };
 
-    const handleCategoriaChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        setFiltroCategoria(event.target.value);
+    const handleCategoriaChange = (event: ChangeEvent<any>) => {
+        const target = event.target as HTMLSelectElement;
+        setFiltroCategoria(target.value);
     };
 
     return (
@@ -88,11 +90,11 @@ const Grilla: React.FC<Props> = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {instrumentos.filter(instrumento => !filtroCategoria || instrumento.id_categoria?.denominacion === filtroCategoria).map(instrumento => (
+                                {instrumentos.filter(instrumento => !filtroCategoria || instrumento.categoria?.denominacion === filtroCategoria).map(instrumento => (
                                     <tr key={instrumento.id}>
                                         <td>{instrumento.id}</td>
                                         <td>{instrumento.instrumento}</td>
-                                        <td>{instrumento.id_categoria?.denominacion}</td>
+                                        <td>{instrumento.categoria?.denominacion}</td>
                                         <td>{instrumento.precio}</td>
                                         <td><Button className='btn btn-success' onClick={() => handleModificar(instrumento.id)}>Modificar</Button></td>
                                         <td><Button className='btn btn-danger' onClick={() => handleDelete(instrumento.id)}>Eliminar</Button></td>

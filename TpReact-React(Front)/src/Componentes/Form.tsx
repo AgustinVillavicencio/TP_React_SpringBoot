@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Navigate } from 'react-router-dom'; // Importa useHistory
+import { useParams, useNavigate} from 'react-router-dom'; // Importa useHistory
 import Instrumento from "../Entities/Instrumento";
 import Categoria from "../Entities/Categoria";
 import { getInstrumentoById , getAllCategorias, updateInstrumento, createInstrumento } from '../Functions/FunctionsApi'; // Asumiendo que tienes una función para obtener un instrumento por su ID
@@ -23,6 +23,7 @@ const Form: React.FC<Props> = () => {
                 if (id !== "0") { // Verifica si el ID no es 0
                     const instrumentoData = await getInstrumentoById(parseInt(String(id))); // Convertir el ID a número y obtener el instrumento correspondiente
                     setInstrumento(instrumentoData);
+                    console.log('Instrumento cargado:', instrumentoData);
                 } else {
                     setInstrumento({
                         id:0,
@@ -30,11 +31,11 @@ const Form: React.FC<Props> = () => {
                         marca: '',
                         modelo: '',
                         imagen:'',
-                        precio: '',
-                        costo_envio: '',
-                        cantidad_vendida: '',
+                        precio: 0,
+                        costoEnvio: '',
+                        cantidadVendida: '',
                         descripcion: '',
-                        id_categoria: { id: 0, denominacion: '' } // Asignar un objeto vacío o con un valor predeterminado
+                        categoria: new Categoria
                     });
                     setLoading(false); // Cuando se establece el instrumento vacío, cambia la bandera de carga a false
                 }
@@ -88,16 +89,24 @@ const Form: React.FC<Props> = () => {
             if (name === "id_categoria") {
                 const selectedCategoria = categorias.find(categoria => categoria.id === parseInt(value));
                 if (selectedCategoria) {
-                    setInstrumento(prevState => ({
-                        ...prevState!,
-                        id_categoria: selectedCategoria
-                    }));
+                    setInstrumento(prevState => {
+                        const updatedInstrumento = {
+                            ...prevState!,
+                            categoria: selectedCategoria
+                        };
+                        console.log(updatedInstrumento);
+                        return updatedInstrumento;
+                    });
                 }
             } else {
-                setInstrumento(prevState => ({
-                    ...prevState!,
-                    [name]: value
-                }));
+                setInstrumento(prevState => {
+                    const updatedInstrumento = {
+                        ...prevState!,
+                        [name]: value
+                    };
+                    console.log(updatedInstrumento);
+                    return updatedInstrumento;
+                });
             }
         }
     };
@@ -110,7 +119,7 @@ const Form: React.FC<Props> = () => {
     
         if (instrumento) { // Verifica si instrumento no es null
             try {
-    
+                console.log('Enviando instrumento:', instrumento);
                 const success = await updateInstrumento(instrumento); // Llama a la función para actualizar el instrumento
                 if (success) {
                     console.log('¡Instrumento actualizado correctamente!');
@@ -137,6 +146,7 @@ const Form: React.FC<Props> = () => {
     
         if (instrumento) {
             try {
+                console.log('Creando instrumento:', instrumento);
                 const success = await createInstrumento(instrumento);
                 if (success) {
                     console.log('¡Instrumento creado correctamente!');
@@ -176,12 +186,12 @@ const Form: React.FC<Props> = () => {
                 <label htmlFor="imagen">Imagen: </label><br />
                 <input type="text" name="imagen" onChange={handleChange} value={instrumento.imagen}/><br /><br />
                 <label htmlFor="costo-de-envio">Costo de envio: </label>
-                <input type="text" name="costo_envio" value={instrumento.costo_envio} onChange={handleChange}/><br /><br />
+                <input type="text" name="costo_envio" value={instrumento.costoEnvio} onChange={handleChange}/><br /><br />
                 <label htmlFor="cantidad-vendida">Cantidad vendida: </label>
-                <input type="text" name="cantidad_vendida" value={instrumento.cantidad_vendida} onChange={handleChange}/><br /><br />
+                <input type="text" name="cantidad_vendida" value={instrumento.cantidadVendida} onChange={handleChange}/><br /><br />
                 <label htmlFor="descripcion">Descripcion: </label>
                 <textarea name="descripcion" id="descripcion" cols={90} rows={3} value={instrumento.descripcion} onChange={handleChange}></textarea><br /><br />
-                <select name="id_categoria" id="categoria" value={instrumento.id_categoria ? instrumento.id_categoria.id : ''} onChange={handleChange}>
+                <select name="id_categoria" id="categoria" value={instrumento.categoria ? instrumento.categoria.id : ''} onChange={handleChange}>
                     {categorias.map(categoria => (
                         <option key={categoria.id} value={categoria.id}>{categoria.denominacion}</option>
                     ))}
