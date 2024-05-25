@@ -1,5 +1,6 @@
 import Instrumento from '../Entities/Instrumento';
 import '../index.css'
+import { UseCarrito } from '../Context/UseCarrito';
 
 // Definición de la interfaz Props que describe las propiedades esperadas para el componente Card
 interface Props {
@@ -11,7 +12,7 @@ interface Props {
 const Card: React.FC<Props> = (props: Props) => {
     // Lógica para determinar la ruta de la imagen
     const rutaImagen = props.info.imagen.startsWith('http') ? props.info.imagen : `../src/assets/img/${props.info.imagen}`;
-
+    const {addCarrito,removeItemCarrito} = UseCarrito()
     // Lógica para determinar el mensaje de costo de envío
     const infoCostoEnvio = props.info.costoEnvio !== 'G' && props.info.costoEnvio !== '0'
         ? "Costo de Envio interior Argentina: " + props.info.costoEnvio
@@ -50,6 +51,8 @@ const Card: React.FC<Props> = (props: Props) => {
                 <a href={`instrumentos/${props.info.id}`}>
                     Detalle
                 </a>
+                <button className="btn btn-info" onClick={()=>addCarrito(props.info)}>Añadir a carrito</button>
+                <button className="btn btn-info" onClick={()=>removeItemCarrito(props.info)}>Sacar de carrito</button>
             </div>
         </>
     );

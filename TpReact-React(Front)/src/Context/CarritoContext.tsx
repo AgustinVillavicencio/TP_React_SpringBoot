@@ -1,122 +1,124 @@
-import { ReactNode, createContext, useState } from 'react'
+import { ReactNode, createContext, useState, useEffect } from 'react';
 import Instrumento from '../Entities/Instrumento';
 import PedidoDetalle from '../Entities/PedidoDetalle';
+import Pedido from '../Entities/Pedido';
+import { postData } from '../Functions/FunctionsApi';
 
-// Definimos el tipo de dato que se almacenará en el contexto del carrito
 interface CartContextType {
     cart: PedidoDetalle[];
     addCarrito: (product: Instrumento) => void;
     removeCarrito: (product: Instrumento) => void;
     removeItemCarrito: (product: Instrumento) => void;
     limpiarCarrito: () => void;
-    total_pedido?:number;
-    fecha_pedido?:Date;
+    totalPedido: number;
 }
 
-//crear contexto
 export const CartContext = createContext<CartContextType>({
     cart: [],
     addCarrito: () => {},
     removeCarrito: () => {},
     removeItemCarrito: () => {},
     limpiarCarrito: () => {},
-    total_pedido: 0,
-    fecha_pedido: new Date()
+    totalPedido: 0
 });
 
+export function CarritoContextProvider({ children }: { children: ReactNode }) {
+    const [cart, setCart] = useState<PedidoDetalle[]>([]);
+    const [totalPedido, setTotalPedido] = useState<number>(0);
 
-//crear provider, encargado de proveer acceso al contexto
-export function CarritoContextProvider({ children }: { children: ReactNode }){
-    
-    const[cart, setCart] = useState<PedidoDetalle[]>([]);
-    const[total_pedido, setTotalPedido] = useState<number>(0);
+    useEffect(() => {
+        calcularTotalCarrito();
+    }, [cart]);
 
-    const addCarrito = async (product: Instrumento) => {
-        let existe:boolean = false
-        cart.forEach(async (cartItem:PedidoDetalle) => {
-            if(cartItem.instrumento.id === product.id){
-                existe = true
-                return existe
+    const addCarrito = (product: Instrumento) => {
+        let existe = false;
+        cart.forEach(element => {
+            if (element.instrumento.id === product.id) {
+                existe = true;
+                return existe;
             }
         });
-        console.log("Producto: "+product)
+
         if (existe) {
-            const cartClonado = JSON.parse(JSON.stringify(cart))
-            cartClonado.forEach((detalle: PedidoDetalle) => {
-            if (detalle.instrumento?.id === product.id) {
-                detalle.cantidad += 1
-                detalle.pedido.totalPedido += product.precio
-            }
-        });
-        await setCart(cartClonado)
-    } 
-        else { // si el producto no esta en el carrito
+            const cartClonado = cart.map(item =>
+                item.instrumento.id === product.id ? { ...item, cantidad: item.cantidad + 1 } : item
+            );
+            setCart(cartClonado);
+        } else {
             const nuevoDetalle: PedidoDetalle = {
-                id:0,
                 instrumento: product,
                 cantidad: 1,
-                pedido:{
-                    id:0,
-                    fechaPedido:new Date(),
-                    totalPedido:Number(product.precio)
-                }
+                pedido: { fechaPedido: new Date(), totalPedido: product.precio }
             };
-            await setCart(prevCart => [...prevCart, nuevoDetalle])
-        }   
-        await calcularTotalCarrito();
-
+            setCart(prevCart => [...prevCart, nuevoDetalle]);
+        }
     };
 
-    const removeCarrito = async (product: Instrumento) => {
-        await setCart(prevCart => prevCart.filter(item => item.id !== product.id))
+    const removeCarrito = (product: Instrumento) => {
+        setCart(prevCart => prevCart.filter(item => item.instrumento.id !== product.id));
     };
 
-    const removeItemCarrito = async (product: Instrumento) => {
-        //const objetoBuscado = cart.find((objeto:Plato) => objeto.id === product.id);
-        //const platoIndice = cart.findIndex((objeto:Plato) => objeto.id === product.id)
-        //si el producto ya esta en el carrito
-        let existe:boolean = false
-        cart.forEach(async (cartItem:PedidoDetalle) => {
-            if(cartItem.instrumento?.id === product.id){
-                existe = true
-            } 
-        });
+    const removeItemCarrito = (product: Instrumento) => {
+        const existente = cart.find(item => item.instrumento.id === product.id);
 
-        if (existe) {
-            //console.log("EXISTE");
-            const cartClonado = JSON.parse(JSON.stringify(cart));
-            cartClonado.forEach((detalle: PedidoDetalle, index: number) => {
-                if (detalle.cantidad >1) {
-                    detalle.cantidad -= 1
-                    detalle.pedido.totalPedido -= product.precio
-                }else{
-                    cartClonado.splice(index, 1);
-                    detalle.pedido.totalPedido -= product.precio;
-                }
-            });
-            setCart(cartClonado)
-        }   
-
-        calcularTotalCarrito();
+        if (existente) {
+            if (existente.cantidad > 1) {
+                const cartClonado = cart.map(item =>
+                    item.instrumento.id === product.id ? { ...item, cantidad: item.cantidad - 1 } : item
+                );
+                setCart(cartClonado);
+            } else {
+                setCart(prevCart => prevCart.filter(item => item.instrumento.id !== product.id));
+            }
+        }
     };
 
     const limpiarCarrito = () => {
-        setCart([])
-    }
+        setCart([]);
+        setTotalPedido(0);
+    };
 
-    const calcularTotalCarrito = async () => {
-        let total:number = 0;
-        cart.forEach(async (element:PedidoDetalle) => {
-            total += element.instrumento?.precio * element.cantidad;
-        });
-        await setTotalPedido(total);
-    }
+    const calcularTotalCarrito = () => {
+        const total = cart.reduce((acc, item) => acc + item.instrumento.precio * item.cantidad, 0);
+        setTotalPedido(total);
+    };
 
+    const handleCheckout = async () => {
+        try {
+            // Crear un nuevo pedido
+            const nuevoPedido: Pedido = {
+                fechaPedido: new Date(),
+                totalPedido: totalPedido
+            };
+    
+            // Realizar una solicitud POST para guardar el pedido
+            const pedidoGuardado = await postData<Pedido>("http://localhost:8080/api/pedidos/save", nuevoPedido);
+    
+            // Asignar el ID del pedido guardado a cada detalle de pedido en el carrito
+            const detallesConPedido: PedidoDetalle[] = cart.map(detalle => ({
+                ...detalle,
+                pedido: {
+                    id: pedidoGuardado.id,
+                    fechaPedido: pedidoGuardado.fechaPedido,
+                    totalPedido: pedidoGuardado.totalPedido
+                }
+            }));
+            
+    
+            // Realizar una solicitud POST para guardar los detalles del pedido
+            await postData<PedidoDetalle[]>("http://localhost:8080/api/pedido_detalles/save", detallesConPedido);
+    
+            // Limpiar el carrito después de enviar los datos
+            limpiarCarrito();
+        } catch (error) {
+            console.error("Error al enviar los datos:", error);
+        }
+    };
 
     return (
-    <CartContext.Provider value={{ cart, addCarrito, limpiarCarrito, removeCarrito, removeItemCarrito, total_pedido }}>
-        {children}
-    </CartContext.Provider>
+        <CartContext.Provider value={{ cart, addCarrito, limpiarCarrito, removeCarrito, removeItemCarrito, totalPedido }}>
+            {children}
+            <button onClick={handleCheckout}>Enviar Datos</button>
+        </CartContext.Provider>
     );
-
 }
