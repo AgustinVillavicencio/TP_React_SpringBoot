@@ -14,7 +14,7 @@ public class PedidoController {
     private IPedidoService iPedidoService;
 
 
-    @PostMapping("/api/pedidos")
+    @PostMapping("/api/pedidos/save")
     public void save(@RequestBody Pedido instrumento){
         // Guardar el instrumento
         iPedidoService.save(instrumento);

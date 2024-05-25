@@ -23,7 +23,7 @@ public class PedidoDetalleController {
     @Autowired
     private IInstrumentoService iInstrumentoService;
 
-    @PostMapping("/api/pedidoDetalles")
+    @PostMapping("/api/pedido_detalles/save")
     public void save(@RequestBody PedidoDetalle pedidoDetalle){
         // Buscar el pedido por su ID y establecerla en el pedidoDetalle
         Pedido pedido = iPedidoService.getById(pedidoDetalle.getPedido().getId());
@@ -37,20 +37,20 @@ public class PedidoDetalleController {
         iPedidoDetalleService.save(pedidoDetalle);
     }
 
-    @GetMapping("/api/pedidoDetalles")
+    @GetMapping("/api/pedido_detalles")
     public List<PedidoDetalle> getAll(){
         return iPedidoDetalleService.getAll();
     }
 
-    @GetMapping("/api/pedidoDetalles/{id}")
+    @GetMapping("/api/pedido_detalles/{id}")
     private PedidoDetalle getById(@PathVariable String id){ return iPedidoDetalleService.getById(Long.parseLong(id));}
 
-    @DeleteMapping("/api/pedidoDetalles/{id}")
+    @DeleteMapping("/api/pedido_detalles/{id}")
     public void remove(@PathVariable String id){
         iPedidoDetalleService.remove(Long.parseLong(id));
     }
 
-    @PutMapping("/api/pedidoDetalles/{id}")
+    @PutMapping("/api/pedido_detalles/{id}")
     public void update(@PathVariable Long id, @RequestBody PedidoDetalle pedidoDetalle){
         // Verificar si el instrumento con el ID dado existe en la base de datos
         PedidoDetalle existingPedidoDetalle = iPedidoDetalleService.getById(id);

@@ -4,7 +4,7 @@ import Instrumento from './Entities/Instrumento.ts';
 import Card from './Componentes/Card.tsx';
 import NavBar from './Componentes/NavBar.tsx';
 import { getAll } from './Functions/FunctionsApi.ts';
-//import Carrito from './Componentes/Carrito.tsx'
+import Carrito from './Componentes/Carrito.tsx'
 import { CarritoContextProvider } from './Context/CarritoContext.tsx';
 
 function App() {
@@ -39,7 +39,7 @@ function App() {
           </div>
           <div className="col-md-4">
             <h2>Carrito Compras</h2>
-            {/*<Carrito />*/}
+            <Carrito />
           </div>
         </div>
       </div>

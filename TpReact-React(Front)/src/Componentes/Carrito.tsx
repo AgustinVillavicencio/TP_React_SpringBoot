@@ -1,6 +1,7 @@
 import { UseCarrito } from '../Context/UseCarrito.tsx'
 import PedidoDetalle from '../Entities/PedidoDetalle.ts'
-import { PostDetalleData } from '../Functions/FunctionsApi.ts'
+import Pedido from '../Entities/Pedido.ts'
+import { PostDetalleData, postData } from '../Functions/FunctionsApi.ts'
 
 function ItemCarrito(props: { item: PedidoDetalle }){
   return(
@@ -25,12 +26,32 @@ function ItemCarrito(props: { item: PedidoDetalle }){
 
 export default function Carrito () {
   
-  const { cart, removeCarrito, addCarrito, limpiarCarrito, total_pedido } = UseCarrito()
+  const { cart, removeCarrito, addCarrito, limpiarCarrito, totalPedido } = UseCarrito()
   
   const handleCheckout = async () => {
-    const result = await PostDetalleData<PedidoDetalle>("http://localhost:8080/pedidoDetalle/save",cart);
-    console.log(result);
-}
+    try {
+      // Guardar el pedido primero
+      const pedido: Pedido = {
+        fechaPedido: new Date(), // Asignar la fecha actual o según sea necesario
+        totalPedido: totalPedido // Usar el total del pedido del contexto
+      };
+      const pedidoGuardado = await postData<Pedido>("http://localhost:8080/api/pedidos/save", pedido);
+      // Asignar el ID del pedido guardado a cada detalle del carrito
+      const detallesConPedido = cart.map(detalle => ({
+        ...detalle,
+        pedido: pedidoGuardado
+      }));
+
+      // Guardar los detalles del pedido
+      const result = await PostDetalleData<PedidoDetalle>("http://localhost:8080/api/pedido_detalles/save", detallesConPedido);
+      console.log(result);
+
+      // Limpiar el carrito después de realizar el checkout
+      limpiarCarrito();
+    } catch (error) {
+      console.error("Error al procesar el checkout:", error);
+    }
+  }
 
   
   return (
@@ -42,7 +63,7 @@ export default function Carrito () {
           ))}
         </ul>
         <div>
-            <h3>${total_pedido}</h3>
+            <h3>${totalPedido}</h3>
         </div>
 
         <button onClick={limpiarCarrito} title='Limpiar Todo'>
@@ -60,9 +81,6 @@ export default function Carrito () {
         Enviar Datos
         </button>
         <br></br>
-        
-        
-        
       </aside>
     </>
   )
