@@ -180,3 +180,15 @@ grid-row: 2/3;
 .column-container button {
   margin-bottom: 10px;
 }
+
+.btMercadoPago{
+  background-color: #535bf2;
+}
+
+.divVisible{
+  visibility:visible;
+}
+
+.divInvisible{
+  visibility:hidden;
+}
