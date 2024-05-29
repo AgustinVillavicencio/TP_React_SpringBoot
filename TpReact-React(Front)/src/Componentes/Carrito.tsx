@@ -4,6 +4,7 @@ import Pedido from '../Entities/Pedido.ts';
 import { PostDetalleData, postData } from '../Functions/FunctionsApi.ts';
 import CheckOutMP from './CheckOutMP.tsx';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Cambiar la importación a useNavigate
 
 function ItemCarrito(props: { item: PedidoDetalle }) {
   return (
@@ -30,6 +31,7 @@ function ItemCarrito(props: { item: PedidoDetalle }) {
 export default function Carrito() {
   const { cart, limpiarCarrito, totalPedido } = UseCarrito();
   const [pedido, setPedido] = useState<Pedido | null>(null);
+  const navigate = useNavigate(); // Usar useNavigate en lugar de useHistory
 
   const handleCheckout = async () => {
     try {
@@ -57,7 +59,7 @@ export default function Carrito() {
       setPedido(pedidoGuardado);
       // Guardar los detalles del pedido
       const result = await PostDetalleData<PedidoDetalle>("http://localhost:8080/api/pedido_detalles/saveAll", detallesConPedido);
-      console.log(result);
+      //console.log(result);
 
       alert(`El pedido con id ${pedidoGuardado.id} se guardó correctamente`);
       // Limpiar el carrito después de realizar el checkout
@@ -65,6 +67,24 @@ export default function Carrito() {
     } catch (error) {
       console.error("Error al procesar el checkout:", error);
     }
+  };
+
+  // Redireccionar al usuario a la página de inicio de sesión ("/login") si el rol no es "user" ni "admin"
+  const handleSendData = () => {
+    const jsonUsuario = localStorage.getItem('usuario');
+    if (!jsonUsuario) {
+      alert("Por favor, inicie sesión para poder comprar.")
+      navigate('/login'); // Redirigir si el usuario no está autenticado
+      return;
+    }
+    if (jsonUsuario) {
+      const usuario = JSON.parse(jsonUsuario);
+      if (usuario.rol !== 'user' && usuario.rol !== 'admin') {
+        navigate('/login'); // Utilizar navigate para redireccionar
+        return;
+      }
+    }
+    handleCheckout(); // Si el usuario es "user" o "admin", ejecutar la función handleCheckout
   };
 
   return (
@@ -79,7 +99,7 @@ export default function Carrito() {
           <h3>${totalPedido}</h3>
         </div>
         <div className="d-flex align-items-center justify-content-evenly">
-          <button className="btn btn-warning" onClick={handleCheckout}>
+          <button className="btn btn-warning" onClick={handleSendData}>
             Enviar Datos
           </button>
           <button className="btn btn-warning me-2" onClick={limpiarCarrito} title="Limpiar Todo">

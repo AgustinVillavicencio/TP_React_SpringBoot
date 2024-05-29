@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import { getAll } from "../Functions/FunctionsApi";
 import Instrumento from "../Entities/Instrumento";
-import '../index.css'; // Asegúrate de importar el archivo CSS
+import '../index.css'; 
 
 const Home = () => {
   const [index, setIndex] = useState<number>(0);
