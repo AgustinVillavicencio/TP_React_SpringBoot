@@ -10,5 +10,4 @@ public class TpReact2Application {
 
 		SpringApplication.run(TpReact2Application.class, args);
 	}
-
 }
