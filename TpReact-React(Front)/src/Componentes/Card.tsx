@@ -34,9 +34,9 @@ const Card: React.FC<Props> = (props: Props) => {
                     <img src={rutaImagen} alt={props.info.instrumento} style={{ width: "100px" }} />
                 </div>
                 {/* Contenedor para la información del instrumento */}
-                <div className='cardBody'>
+                <div className='cardBody '>
                     {/* Renderiza el título del instrumento */}
-                    <h2 className='title'>{props.info.instrumento}</h2>
+                    <h2 className='title d-flex justify-content-start align-items-start'>{props.info.instrumento}</h2>
                     {/* Renderiza el precio del instrumento */}
                     <p className='mt-4 price'>${props.info.precio}</p>
                     {/* Renderiza el mensaje de costo de envío y la imagen del camión si corresponde */}

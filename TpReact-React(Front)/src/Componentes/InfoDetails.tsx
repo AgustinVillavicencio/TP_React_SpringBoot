@@ -10,7 +10,7 @@ interface Props {
 const InfoDetails: React.FC<Props> = (props: Props) => {
   // Lógica para determinar el mensaje de costo de envío
   const infoCostoEnvio = props.instrumento?.costoEnvio != 'G' && props.instrumento?.costoEnvio != '0'
-      ? "Costo de Envio interior Argentina: " + props.instrumento?.costoEnvio
+      ? "Costo de Envio interior Argentina: $" + props.instrumento?.costoEnvio
       : "Envío gratis a todo el país";
 
   // Determina la clase CSS según el tipo de costo de envío

@@ -40,7 +40,9 @@ const NavBar = () => {
                         {usuarioLogueado?.rol === Roles.ADMIN && <Nav.Link href="/grilla">Grilla</Nav.Link>}
                         <Nav.Item className='d-flex align-items-center bg-warning'>
                             <span className="navbar-user-info mx-3">
-                                Usuario: {usuarioLogueado?.rol === Roles.ADMIN ? "Admin" : "Común"}
+                            {usuarioLogueado
+                                    ? `Usuario: ${usuarioLogueado.rol === Roles.ADMIN ? "Admin" : "Común"}`
+                                    : "Usuario: No logueado"}
                             </span>
                         </Nav.Item>
                         <Nav.Item className=''>
