@@ -23,7 +23,7 @@ public class PDFController {
     private PDFService pdfService;
 
     @Autowired
-    private InstrumentoRepository instrumentoRepository; // Asumiendo que tienes un repositorio para los instrumentos
+    private InstrumentoRepository instrumentoRepository;
 
     @GetMapping("/downloadPDFInstrumento/{id}")
     public ResponseEntity<byte[]> downloadPDFInstrumento(@PathVariable Long id) throws IOException {

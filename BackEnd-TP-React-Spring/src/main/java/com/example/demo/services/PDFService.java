@@ -11,21 +11,17 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Image;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -37,32 +33,13 @@ public class PDFService {
 
         PdfWriter writer = new PdfWriter(out);
         PdfDocument pdfDoc = new PdfDocument(writer);
-        Document document = new Document(pdfDoc, PageSize.A4);
+        Document document = new Document(pdfDoc, PageSize.A4.rotate());
         Paragraph emptyParagraph = new Paragraph();
 
         PdfFont boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
-
-
-        //Logo UTN
-        ClassPathResource rutaLogo = new ClassPathResource("static/UTN.jpg");
-        ImageData imageDataLogo;
-        try (InputStream is = rutaLogo.getInputStream()) {
-            imageDataLogo = ImageDataFactory.create(is.readAllBytes());
-        }
-        Image imageLogo = new Image(imageDataLogo).setWidth(UnitValue.createPercentValue(50)).setHorizontalAlignment(HorizontalAlignment.LEFT);
-        document.add(imageLogo);
-
-        // Titulo
-        Paragraph title = new Paragraph(instrumento.getInstrumento())
-                .setFont(boldFont)
-                .setFontSize(25)
-                .setTextAlignment(TextAlignment.CENTER);
-        document.add(title);
-        document.add(emptyParagraph);
-        document.add(emptyParagraph);
+        PdfFont regularFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
 
         // Imagen
-
         ImageData imageData;
         if (instrumento.getImagen().startsWith("http")) {
             try {
@@ -72,47 +49,60 @@ public class PDFService {
                 throw new IOException("Invalid URL for image", e);
             }
         } else {
-            ClassPathResource imgFile = new ClassPathResource("static/" + instrumento.getImagen());
-            try (InputStream is = imgFile.getInputStream()) {
-                imageData = ImageDataFactory.create(is.readAllBytes());
-            }
+            String imagePath = "src/main/resources/static/" + instrumento.getImagen();
+            File file = new File(imagePath);
+            imageData = ImageDataFactory.create(file.getAbsolutePath());
         }
-        Image image = new Image(imageData).setWidth(UnitValue.createPercentValue(50))
-                .setHorizontalAlignment(HorizontalAlignment.CENTER);
-        document.add(image);
+
+        Image image = new Image(imageData)
+                .setWidth(UnitValue.createPercentValue(40))
+                .setHorizontalAlignment(HorizontalAlignment.LEFT);
+
+        Div detallesDiv = new Div()
+                .setWidth(UnitValue.createPercentValue(60))
+                .setHorizontalAlignment(HorizontalAlignment.RIGHT);
+
+        detallesDiv.add(new Paragraph(String.valueOf(instrumento.getCantidadVendida()) + " vendidos").setFontSize(12).setTextAlignment(TextAlignment.CENTER));
+        detallesDiv.add(new Paragraph(instrumento.getInstrumento()).setBold().setFontSize(30));
+        detallesDiv.add(new Paragraph());
+        detallesDiv.add(new Paragraph(instrumento.getDescripcion()).setTextAlignment(TextAlignment.LEFT));
+
+
+        Paragraph precioParagraph = new Paragraph();
+        precioParagraph.add(new Text("Precio: ").setFont(boldFont));
+        precioParagraph.add(new Text("$" + instrumento.getPrecio()).setFont(regularFont));
+        detallesDiv.add(precioParagraph);
+
+
+        Paragraph marcaParagraph = new Paragraph();
+        marcaParagraph.add(new Text("Marca: ").setFont(boldFont));
+        marcaParagraph.add(new Text(instrumento.getMarca()).setFont(regularFont));
+        detallesDiv.add(marcaParagraph);
+
+
+        Paragraph modeloParagraph = new Paragraph();
+        modeloParagraph.add(new Text("Modelo: ").setFont(boldFont));
+        modeloParagraph.add(new Text(instrumento.getModelo()).setFont(regularFont));
+        detallesDiv.add(modeloParagraph);
+
+
+        Paragraph envioParagraph = new Paragraph();
+        if ("G".equals(instrumento.getCostoEnvio()) || "0".equals(instrumento.getCostoEnvio())) {
+            envioParagraph.add(new Image(ImageDataFactory.create("src/main/resources/static/camion.png")).setWidth(20)); // Imagen del camión
+            envioParagraph.add(new Text("Envío gratis a todo el país").setFont(boldFont).setFontColor(ColorConstants.GREEN));
+        } else {
+            envioParagraph.add(new Text("Costo de Envio interior Argentina: $").setFont(boldFont).setFontColor(ColorConstants.ORANGE));
+            envioParagraph.add(new Text(instrumento.getCostoEnvio()).setFontColor(ColorConstants.ORANGE));
+        }
+        detallesDiv.add(envioParagraph);
+
+        // Agregar la imagen a la izquierda y los detalles a la derecha
+        document.add(new Paragraph().add(image).add(detallesDiv));
+
         document.add(emptyParagraph);
         document.add(emptyParagraph);
         document.add(emptyParagraph);
         document.add(emptyParagraph);
-
-        // Descripcion
-        Paragraph description = new Paragraph(instrumento.getDescripcion())
-                .setFontSize(20);  // Adjust font size as needed
-        document.add(description);
-
-        document.add(emptyParagraph);
-        document.add(emptyParagraph);
-        document.add(emptyParagraph);
-        // Tabla sin bordes
-        Table table = new Table(UnitValue.createPercentArray(new float[]{1, 3}))
-                .useAllAvailableWidth()
-                .setFontSize(16);
-
-        table.addCell(new Cell().add(new Paragraph("Marca:").setBold()).setBorder(null));
-        table.addCell(new Cell().add(new Paragraph(String.valueOf(instrumento.getMarca()))).setBorder(null));
-
-        table.addCell(new Cell().add(new Paragraph("Modelo:").setBold()).setBorder(null));
-        table.addCell(new Cell().add(new Paragraph(String.valueOf(instrumento.getModelo()))).setBorder(null));
-
-        table.addCell(new Cell().add(new Paragraph("Categoria:").setBold()).setBorder(null));
-        table.addCell(new Cell().add(new Paragraph(instrumento.getCategoria().getDenominacion())).setBorder(null));
-
-        table.addCell(new Cell().add(new Paragraph("Precio:").setBold()).setBorder(null));
-        table.addCell(new Cell().add(new Paragraph("$"+String.valueOf(instrumento.getPrecio()))).setBorder(null));
-
-
-
-        document.add(table);
 
         document.close();
 

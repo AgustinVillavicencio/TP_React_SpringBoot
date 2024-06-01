@@ -26,14 +26,14 @@ const InfoDetails: React.FC<Props> = (props: Props) => {
           {/* Muestra el nombre del instrumento */}
           <h1 className='titleInformacion'>{props.instrumento?.instrumento}</h1>
           {/* Muestra el precio del instrumento */}
-          <p>{props.instrumento?.descripcion}</p>
-          <p>$ {props.instrumento?.precio}</p>
+          <p className='text-start'>{props.instrumento?.descripcion}</p>
+          <p className='text-start'><b>Precio:</b> $ {props.instrumento?.precio}</p>
           {/* Muestra la marca del instrumento */}
-          <p>Marca: {props.instrumento?.marca}</p>
+          <p className='text-start'><b>Marca:</b> {props.instrumento?.marca}</p>
           {/* Muestra el modelo del instrumento */}
-          <p>Modelo: {props.instrumento?.modelo}</p>
+          <p className='text-start'><b>Modelo:</b> {props.instrumento?.modelo}</p>
           {/* Muestra el costo de envío y la imagen del camión si corresponde */}
-          <p className={costoClassName}>
+          <p className={`text-start ${costoClassName}`}>
               {props.instrumento?.costoEnvio == 'G' || props.instrumento?.costoEnvio == '0' ? (<img src="../src/assets/img/camion.png" alt="camion" />) : ''}
               {infoCostoEnvio}
           </p>
