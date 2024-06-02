@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Chart } from "react-google-charts";
 import NavBar from './NavBar';
-import { getDataSecondChart } from '../Functions/FunctionsApi.ts'; // Ajusta la ruta según tu estructura de archivos
+import { getDataFirstChart, getDataSecondChart, getDataThirdChart } from '../Functions/FunctionsApi.ts'; // Ajusta la ruta según tu estructura de archivos
 
 export const options = {
-    title: "Population of Largest U.S. Cities",
+    title: "Pedidos agrupados por mes y anio",
     chartArea: { width: "70%" },
     hAxis: {
-      title: "Total Population",
-      minValue: 0,
+        title: "Cantidad de pedidos",
+        minValue: 0,
     },
     vAxis: {
-      title: "City",
+        title: "Fecha",
     },
 };
 
@@ -19,31 +19,42 @@ export const optionsPie = {
     title: "Cantidad de pedidos agrupados por instrumentos",
 };
 
+export const optionsBarras = {
+    chart: {
+        title: "Instrumentos mas vendidos",
+        subtitle: "Sales, Expenses, and Profit: 2020-present",
+    },
+};
+
 
 function Charts() {
 
-    const [dataPie, setDataPie] = useState<[string, number][]>([]);
     const [datosChartPie, setDatosChartPie] = useState<any>();
+    const [datosChartBar, setDatosChartBar] = useState<any>();
+    const [datosChartBarras, setDatosChartBarras] = useState<any>();
 
     const getPieChart =  async () => {
         const datosBackend = await getDataSecondChart();
         console.log(datosBackend);
         setDatosChartPie(datosBackend);
     }
+    const getBarChart =  async () => {
+        const datosBackend = await getDataFirstChart();
+        console.log(datosBackend);
+        setDatosChartBar(datosBackend);
+    }
 
-    // Datos y opciones para el gráfico de barras
-    // const data = [
-    //     ["City", "2010 Population", "2000 Population"],
-    //     ["New York City, NY", 8175000, 8008000],
-    //     ["Los Angeles, CA", 3792000, 3694000],
-    //     ["Chicagoa, IL", 2695000, 2896000],
-    //     ["Houston, TX", 2099000, 1953000],
-    //     ["Philadelphia, PA", 1526000, 1517000],
-    // ];
-    
+    const getBarrasChart =  async () => {
+        const datosBackend = await getDataThirdChart();
+        console.log(datosBackend);
+        setDatosChartBarras(datosBackend);
+    }
+
     // useEffect para hacer la solicitud al backend
     useEffect(() => {
         getPieChart();
+        getBarChart();
+        getBarrasChart();
     }, []);
 
     return (
@@ -53,16 +64,22 @@ function Charts() {
                 chartType="BarChart"
                 width="100%"
                 height="400px"
-                data={dataPie}
+                data={datosChartBar}
                 options={options}
-            />
+            /> 
             <Chart
                 chartType="PieChart"
                 data={datosChartPie}
                 options={optionsPie}
                 width={"100%"}
-                height={"400px"}
-            />  
+                height={"450px"}
+            />
+                <Chart chartType="ColumnChart" 
+                width="100%" 
+                height="400px" 
+                data={datosChartBarras} 
+            />
+
         </>
     );
 }

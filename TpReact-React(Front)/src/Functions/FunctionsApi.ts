@@ -301,3 +301,43 @@ export async function getDataSecondChart() {
     // Retorna los datos obtenidos de la API
     return data;
 }
+
+export async function getDataFirstChart() {
+    const url = "http://localhost:8080/api/pedidosPorMesYAnio";
+
+    // Realiza una solicitud GET a la API
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            "Content-Type": 'application/json',
+            "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+        },
+        mode: 'cors' // Modo CORS para permitir solicitudes entre dominios
+    });
+
+    // Extrae los datos de la respuesta como JSON
+    const data = await response.json();
+
+    // Retorna los datos obtenidos de la API
+    return data;
+}
+
+export async function getDataThirdChart() {
+    const url = "http://localhost:8080/api/unidadesVendidasPorInstrumento";
+
+    // Realiza una solicitud GET a la API
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            "Content-Type": 'application/json',
+            "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+        },
+        mode: 'cors' // Modo CORS para permitir solicitudes entre dominios
+    });
+
+    // Extrae los datos de la respuesta como JSON
+    const data = await response.json();
+
+    // Retorna los datos obtenidos de la API
+    return data;
+}
