@@ -38,6 +38,7 @@ const NavBar = () => {
                         <Nav.Link href="/dondeEstamos">Donde estamos</Nav.Link>
                         <Nav.Link href="/instrumentos">Instrumentos</Nav.Link>
                         {usuarioLogueado?.rol === Roles.ADMIN && <Nav.Link href="/grilla">Grilla</Nav.Link>}
+                        {usuarioLogueado?.rol === Roles.ADMIN && <Nav.Link href="/charts">Charts</Nav.Link>}
                         <Nav.Item className='d-flex align-items-center bg-warning'>
                             <span className="navbar-user-info mx-3">
                             {usuarioLogueado

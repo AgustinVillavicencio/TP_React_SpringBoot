@@ -281,3 +281,23 @@ export function createExcelPedidos(fechaDesde:string, fechaHasta:string){
     let url = `http://localhost:8080/api/descargarExcelPedidos?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`;
         window.location.href = url;
 }
+
+export async function getDataSecondChart() {
+    const url = "http://localhost:8080/api/pedidosPorInstrumento";
+
+    // Realiza una solicitud GET a la API
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            "Content-Type": 'application/json',
+            "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+        },
+        mode: 'cors' // Modo CORS para permitir solicitudes entre dominios
+    });
+
+    // Extrae los datos de la respuesta como JSON
+    const data = await response.json();
+
+    // Retorna los datos obtenidos de la API
+    return data;
+}

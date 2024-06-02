@@ -49,3 +49,11 @@ q
 Asrc/main/java/com/example/demo/services/PedidoDetalleService.java,4\b\4bdcea0624f1026f2e311d6a3edae486b9b79253
 r
 Bsrc/main/java/com/example/demo/services/IPedidoDetalleService.java,2\4\246421d5493b17c06023068715c86fb0696332d0
+i
+9src/main/java/com/example/demo/services/ChartService.java,b\e\bede1a1aa2338b18711d2753aad5f085022d5faf
+o
+?src/main/java/com/example/demo/controllers/ChartController.java,4\4\44f89d9e69d07ca32922c57a9362ee7250aaa618
+j
+:src/main/java/com/example/demo/services/PedidoService.java,5\a\5a8056732f933e5641ce77a2cf11a46a095ed4a5
+p
+@src/main/java/com/example/demo/controllers/PedidoController.java,1\6\168f4bffd0d6a7bfdc9c689ae68cac9ef5d8081e

@@ -12,6 +12,7 @@ import Form from "./Componentes/Form.tsx"
 import Login from './Componentes/Login.tsx';
 import RolUsuario from './Control Access/RolUsuario.tsx';
 import { Roles } from './Entities/Roles.ts';
+import Charts from './Componentes/Charts.tsx';
 
 // Renderizado de la aplicación utilizando ReactDOM.createRoot
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -34,6 +35,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path="/formulario/:id" element={<Form />} />
         <Route element={<RolUsuario rol={Roles.ADMIN} />}>
             <Route path="/grilla" element={<Grilla />} />
+        </Route>
+        <Route element={<RolUsuario rol={Roles.ADMIN} />}>
+            <Route path="/charts" element={<Charts />} />
         </Route>
       </Routes>
     </BrowserRouter>
