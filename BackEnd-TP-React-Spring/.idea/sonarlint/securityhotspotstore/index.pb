@@ -45,3 +45,7 @@ h
 8src/main/java/com/example/demo/entities/Instrumento.java,1\d\1d4ece5341518f5b2cc71234d99eddb40a0be3d0
 m
 =src/main/java/com/example/demo/controllers/PDFController.java,c\9\c98311d524ad806de66778bc754bf2f583fd5c65
+q
+Asrc/main/java/com/example/demo/services/PedidoDetalleService.java,4\b\4bdcea0624f1026f2e311d6a3edae486b9b79253
+r
+Bsrc/main/java/com/example/demo/services/IPedidoDetalleService.java,2\4\246421d5493b17c06023068715c86fb0696332d0

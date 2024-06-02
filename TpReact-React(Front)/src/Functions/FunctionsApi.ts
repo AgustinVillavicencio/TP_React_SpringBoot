@@ -266,4 +266,18 @@ export async function createPreferenceMP(pedido?:Pedido){
     mode: 'cors'
 	});
     return await response.json() as PreferenceMP;   
-}    
+}
+
+export function createPDFInstrumento(id:number){
+    let url =`http://localhost:8080/api/downloadPDFInstrumento/${id}`
+    window.location.href = url;
+}
+
+export function createExcelInstrumentos(){
+    let url =`http://localhost:8080/api/descargarExcelInstrumentos`
+    window.location.href = url;
+}
+export function createExcelPedidos(fechaDesde:string, fechaHasta:string){
+    let url = `http://localhost:8080/api/descargarExcelPedidos?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`;
+        window.location.href = url;
+}

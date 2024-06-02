@@ -1,11 +1,10 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import Instrumento from "../Entities/Instrumento";
 import Categoria from "../Entities/Categoria";
-import { deleteInstrumento, getAll, getAllCategorias } from '../Functions/FunctionsApi';
+import { createExcelInstrumentos,  createExcelPedidos,  deleteInstrumento, getAll, getAllCategorias } from '../Functions/FunctionsApi';
 import NavBar from './NavBar';
 import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Button, Table, Form } from 'react-bootstrap';
-//import { FormControlProps } from 'react-bootstrap';
+import { Container, Row, Col, Button, Table, Form, Modal, FormControl } from 'react-bootstrap';
 
 interface Props {}
 
@@ -13,6 +12,9 @@ const Grilla: React.FC<Props> = () => {
     const [instrumentos, setInstrumentos] = useState<Instrumento[]>([]);
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [filtroCategoria, setFiltroCategoria] = useState<string>("");
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [fechaDesde, setFechaDesde] = useState<string | undefined>(undefined);
+    const [fechaHasta, setFechaHasta] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         const cargarDatos = async () => {
@@ -54,14 +56,62 @@ const Grilla: React.FC<Props> = () => {
         setFiltroCategoria(target.value);
     };
 
+    const handleShowModal = () => setShowModal(true);
+    const handleCloseModal = () => setShowModal(false);
+
+    const handleDownloadExcelPedidos = () => {
+        if (fechaDesde && fechaHasta) {
+            const fechaDesdeDate = new Date(fechaDesde);
+            const fechaHastaDate = new Date(fechaHasta);
+    
+            // Formatear las fechas en el formato esperado yyyy-MM-dd
+            const formattedFechaDesde = formatDate(fechaDesdeDate);
+            const formattedFechaHasta = formatDate(fechaHastaDate);
+            
+            createExcelPedidos(formattedFechaDesde, formattedFechaHasta)
+        } else {
+            alert('Por favor, seleccione ambas fechas.');
+        }
+        handleCloseModal(); // Cerrar el modal después de descargar el Excel
+    };
+
+    const formatDate = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+    
+    // Función para manejar el cambio de fechaDesde
+    const handleFechaDesdeChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value; // Obtener el valor de entrada
+        setFechaDesde(value); // Establecer directamente el valor en el estado
+    };
+
+    // Función para manejar el cambio de fechaHasta
+    const handleFechaHastaChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value; // Obtener el valor de entrada
+        setFechaHasta(value); // Establecer directamente el valor en el estado
+    };
+
     return (
         <>
             <NavBar />
             <Container className="mt-4">
                 <Row className="mb-4">
-                    <Col>
+                    <Col xs={12} md={2} className="text-md-end mt-3 mt-md-0"> 
+                        <Button className="btn btn-info" onClick={() => createExcelInstrumentos()}>Excel Grilla</Button>
+                    </Col>
+                    <Col xs={12} md={10} className="text-md-end mt-3 mt-md-0"> 
+                        <Button className="btn btn-info" onClick={handleShowModal}>Excel Pedidos</Button>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12} md={12} className="text-center"> 
                         <Button className='btn btn-primary' onClick={() => handleModificar(0)}>Nuevo</Button>
                     </Col>
+
+                    
                 </Row>
                 <Row className="mb-4 justify-content-center">
                     <Col md={3}>
@@ -105,6 +155,26 @@ const Grilla: React.FC<Props> = () => {
                     </Col>
                 </Row>
             </Container>
+            {/* Modal para seleccionar fechas */}
+            <Modal show={showModal} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Seleccionar rango de fechas</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form.Group controlId="fechaDesde">
+                        <Form.Label>Desde:</Form.Label>
+                        <FormControl type="date" value={fechaDesde || ''} onChange={handleFechaDesdeChange}/>
+                    </Form.Group>
+                    <Form.Group controlId="fechaHasta">
+                        <Form.Label>Hasta:</Form.Label>
+                        <FormControl type="date" value={fechaHasta || ''} onChange={handleFechaHastaChange}/>
+                    </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModal}>Cancelar</Button>
+                    <Button variant="primary" onClick={handleDownloadExcelPedidos}>Descargar</Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 }

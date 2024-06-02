@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import Instrumento from '../Entities/Instrumento';
-import { getInstrumentoById } from '../Functions/FunctionsApi';
+import { createPDFInstrumento, getInstrumentoById } from '../Functions/FunctionsApi';
 import { useParams } from 'react-router-dom';
 import NavBar from './NavBar';
 import InfoDetails from './InfoDetails';
-import { Col, Row, Container } from 'react-bootstrap';
+import { Col, Row, Container, Button } from 'react-bootstrap';
 
 // Definición del componente funcional InstrumentoDetails
 function InstrumentoDetails() {
@@ -54,9 +54,15 @@ function InstrumentoDetails() {
           </Col>
         </Row>
       </Container>
+      <Button 
+          className="mt-4"
+          onClick={() => createPDFInstrumento(Number(id))} 
+      >
+        Descargar PDF
+      </Button>
     </>
   );
 }
 
-// Exporta el componente InstrumentoDetails como el componente predeterminado
+
 export default InstrumentoDetails;

@@ -15,7 +15,6 @@ import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -60,7 +59,8 @@ public class PDFService {
 
         Div detallesDiv = new Div()
                 .setWidth(UnitValue.createPercentValue(60))
-                .setHorizontalAlignment(HorizontalAlignment.RIGHT);
+                .setHorizontalAlignment(HorizontalAlignment.RIGHT)
+                .setMarginLeft(20);;
 
         detallesDiv.add(new Paragraph(String.valueOf(instrumento.getCantidadVendida()) + " vendidos").setFontSize(12).setTextAlignment(TextAlignment.CENTER));
         detallesDiv.add(new Paragraph(instrumento.getInstrumento()).setBold().setFontSize(30));
