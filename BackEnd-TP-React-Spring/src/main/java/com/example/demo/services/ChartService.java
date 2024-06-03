@@ -1,7 +1,9 @@
 package com.example.demo.services;
 
+import com.example.demo.entities.Pedido;
 import com.example.demo.entities.PedidoDetalle;
 import com.example.demo.repository.PedidoDetalleRepository;
+import com.example.demo.repository.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,9 @@ public class ChartService {
 
     @Autowired
     private PedidoDetalleRepository pedidoDetalleRepository;
+
+    @Autowired
+    private PedidoRepository pedidoRepository;
 
     public List<Object[]> getPedidosPorInstrumentoAsArray() {
         List<PedidoDetalle> detalles = pedidoDetalleRepository.findAll();
@@ -47,15 +52,16 @@ public class ChartService {
 
 
     public List<Object[]> getPedidosPorMesYAnio() {
-        List<PedidoDetalle> detalles = pedidoDetalleRepository.findAll();
+        // Obtener todos los pedidos únicos
+        List<Pedido> pedidos = pedidoRepository.findAll();
         Map<YearMonth, Integer> pedidosPorMesYAnio = new TreeMap<>();
 
         // Agrupar los pedidos por mes y año
-        for (PedidoDetalle detalle : detalles) {
-            LocalDate fechaPedido = detalle.getPedido().getFechaPedido().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        for (Pedido pedido : pedidos) {
+            LocalDate fechaPedido = pedido.getFechaPedido().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             YearMonth mesYAnio = YearMonth.from(fechaPedido);
-            int cantidad = detalle.getCantidad();
-            pedidosPorMesYAnio.put(mesYAnio, pedidosPorMesYAnio.getOrDefault(mesYAnio, 0) + cantidad);
+
+            pedidosPorMesYAnio.put(mesYAnio, pedidosPorMesYAnio.getOrDefault(mesYAnio, 0) + 1);
         }
 
         // Convertir el mapa en una lista de arrays
@@ -65,12 +71,13 @@ public class ChartService {
         resultado.add(new Object[]{"Mes y Año", "Cantidad de Pedidos"});
 
         // Agregar los datos agrupados
-        for(Map.Entry<YearMonth, Integer> entry : pedidosPorMesYAnio.entrySet()) {
+        for (Map.Entry<YearMonth, Integer> entry : pedidosPorMesYAnio.entrySet()) {
             resultado.add(new Object[]{entry.getKey().toString(), entry.getValue()});
         }
 
         return resultado;
     }
+
 
     public List<Object[]> getUnidadesVendidasPorInstrumento() {
         List<PedidoDetalle> detalles = pedidoDetalleRepository.findAll();

@@ -118,7 +118,7 @@ export function CarritoContextProvider({ children }: { children: ReactNode }) {
     return (
         <CartContext.Provider value={{ cart, addCarrito, limpiarCarrito, removeCarrito, removeItemCarrito, totalPedido }}>
             {children}
-            <button onClick={handleCheckout}>Enviar Datos</button>
+            {<button className="d-none" onClick={handleCheckout}>Enviar Datos</button>}
         </CartContext.Provider>
     );
 }
