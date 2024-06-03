@@ -13,7 +13,8 @@ const Form: React.FC<Props> = () => {
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [loading, setLoading] = useState<boolean>(true); // Bandera de carga
     const navigate = useNavigate();
-    const [imagenURL, setImagenURL] = useState<string | null>(null);
+    const [, setImagenURL] = useState<string | null>(null);
+    const [, setImagen] = useState<string | null>(null);
 
     
 
@@ -21,9 +22,9 @@ const Form: React.FC<Props> = () => {
         const cargarInstrumento = async () => {
             try {
                 if (id !== "0") { // Verifica si el ID no es 0
-                    const instrumentoData = await getInstrumentoById(parseInt(String(id))); // Convertir el ID a número y obtener el instrumento correspondiente
+                    const instrumentoData = await getInstrumentoById(parseInt(String(id)));
                     setInstrumento(instrumentoData);
-                    console.log('Instrumento cargado:', instrumentoData);
+                    //console.log('Instrumento cargado:', instrumentoData);
                 } else {
                     setInstrumento({
                         id:0,
@@ -33,8 +34,9 @@ const Form: React.FC<Props> = () => {
                         imagen:'',
                         precio: 0,
                         costoEnvio: '',
-                        cantidadVendida: '',
+                        cantidadVendida: 0,
                         descripcion: '',
+                        eliminado: false,
                         categoria: new Categoria
                     });
                     setLoading(false); // Cuando se establece el instrumento vacío, cambia la bandera de carga a false
@@ -94,7 +96,7 @@ const Form: React.FC<Props> = () => {
                             ...prevState!,
                             categoria: selectedCategoria
                         };
-                        console.log(updatedInstrumento);
+                        //console.log(updatedInstrumento);
                         return updatedInstrumento;
                     });
                 }
@@ -102,9 +104,9 @@ const Form: React.FC<Props> = () => {
                 setInstrumento(prevState => {
                     const updatedInstrumento = {
                         ...prevState!,
-                        [name]: value
+                        [name]: name === "cantidad_vendida" ? parseInt(value) : value, // Convertir a entero si es el campo de cantidad vendida
                     };
-                    console.log(updatedInstrumento);
+                    //console.log(updatedInstrumento);
                     return updatedInstrumento;
                 });
             }
@@ -163,6 +165,30 @@ const Form: React.FC<Props> = () => {
         }
     };
     
+    const handleImagenChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files && event.target.files[0]; // Obtener el archivo seleccionado
+        if (file) {
+            const reader = new FileReader(); // Crear un FileReader para leer el archivo
+            reader.onloadend = () => {
+                // Cuando la lectura del archivo finaliza, actualiza el estado con la URL de la imagen
+                setImagen(reader.result as string);
+                setInstrumento(prevState => ({
+                    ...prevState!,
+                    imagen: file.name // Guardar el nombre del archivo en el estado del instrumento
+                }));
+            };
+            reader.readAsDataURL(file); // Leer el contenido del archivo como una URL de datos
+        } else {
+            // Si no se selecciona ningún archivo, actualiza el estado de la imagen y del instrumento a null
+            setImagen(null);
+            setInstrumento(prevState => ({
+                ...prevState!,
+                imagen: '' // Establecer la imagen como una cadena vacía en lugar de null
+            }));
+        }
+    };
+    
+    
     
 
     
@@ -170,41 +196,73 @@ const Form: React.FC<Props> = () => {
         return <div>Cargando...</div>; // Muestra un indicador de carga mientras se cargan los datos o si no hay instrumento
     }
 
-    return(
+    return (
         <>
-        <NavBar />
-        <div className='mt-4'>
-        <form onSubmit={instrumento.id === 0 ? handleSubmitCrear : handleSubmit}>
-                <label htmlFor="instrumento">Instrumento: </label>
-                <input type="text" name="instrumento" value={instrumento.instrumento} onChange={handleChange}/><br /><br />
-                <label htmlFor="marca">Marca: </label>
-                <input type="text" name="marca" value={instrumento.marca} onChange={handleChange}/><br /><br />
-                <label htmlFor="modelo">Modelo: </label>
-                <input type="text" name="modelo" value={instrumento.modelo} onChange={handleChange}/><br /><br />
-                <label htmlFor="precio">Precio: </label>
-                <input type="text" name="precio" value={instrumento.precio} onChange={handleChange}/><br /><br />
-                <label htmlFor="imagen">Imagen: </label><br />
-                <input type="text" name="imagen" onChange={handleChange} value={instrumento.imagen}/><br /><br />
-                <label htmlFor="costo-de-envio">Costo de envio: </label>
-                <input type="text" name="costo_envio" value={instrumento.costoEnvio} onChange={handleChange}/><br /><br />
-                <label htmlFor="cantidad-vendida">Cantidad vendida: </label>
-                <input type="text" name="cantidad_vendida" value={instrumento.cantidadVendida} onChange={handleChange}/><br /><br />
-                <label htmlFor="descripcion">Descripcion: </label>
-                <textarea name="descripcion" id="descripcion" cols={90} rows={3} value={instrumento.descripcion} onChange={handleChange}></textarea><br /><br />
-                <select name="id_categoria" id="categoria" value={instrumento.categoria ? instrumento.categoria.id : ''} onChange={handleChange}>
-                    {categorias.map(categoria => (
-                        <option key={categoria.id} value={categoria.id}>{categoria.denominacion}</option>
-                    ))}
-                </select><br /><br />
-                {instrumento.id === 0 ? (
-                    <button type='submit' className='btn btn-primary'>Crear</button>
-                ) : (
-                    <button type='submit' className='btn btn-success'>Modificar</button>
-                )}
-            </form>
-        </div>
+            <NavBar />
+            <div className='container mt-4'>
+                <form onSubmit={instrumento.id === 0 ? handleSubmitCrear : handleSubmit}>
+    
+                    <div className="mb-3">
+                        <label htmlFor="instrumento" className="form-label">Instrumento:</label>
+                        <input type="text" className="form-control mx-auto" style={{ width: '50%' }} name="instrumento" value={instrumento.instrumento} onChange={handleChange} />
+                    </div>
+    
+                    <div className="mb-3">
+                        <label htmlFor="marca" className="form-label">Marca:</label>
+                        <input type="text" className="form-control mx-auto" style={{ width: '50%' }} name="marca" value={instrumento.marca} onChange={handleChange} />
+                    </div>
+    
+                    <div className="mb-3">
+                        <label htmlFor="modelo" className="form-label">Modelo:</label>
+                        <input type="text" className="form-control mx-auto" style={{ width: '50%' }} name="modelo" value={instrumento.modelo} onChange={handleChange} />
+                    </div>
+    
+                    <div className="mb-3">
+                        <label htmlFor="precio" className="form-label">Precio:</label>
+                        <input type="text" className="form-control mx-auto" style={{ width: '50%' }} name="precio" value={instrumento.precio} onChange={handleChange} />
+                    </div>
+    
+                    <div className="mb-3">
+                        <label htmlFor="imagen" className="form-label">Imagen:</label><br />
+                        <img src={"/src/assets/img/"+instrumento.imagen} alt="imagenInstrumento" />
+                        <input type="file" className="form-control mx-auto w-50" name="imagen" onChange={handleImagenChange} />
+                    </div>
+    
+                    <div className="mb-3">
+                        <label htmlFor="costoEnvio" className="form-label">Costo de envio:</label>
+                        <input type="text" className="form-control mx-auto" style={{ width: '50%' }} name="costoEnvio" value={instrumento.costoEnvio} onChange={handleChange} />
+                    </div>
+    
+                    <div className="mb-3">
+                        <label htmlFor="cantidadVendida" className="form-label">Cantidad vendida:</label>
+                        <input type="text" className="form-control mx-auto" style={{ width: '50%' }} name="cantidadVendida" value={instrumento.cantidadVendida} onChange={handleChange} />
+                    </div>
+    
+                    <div className="mb-3">
+                        <label htmlFor="descripcion" className="form-label">Descripción:</label>
+                        <textarea className="form-control mx-auto" style={{ width: '50%' }} name="descripcion" id="descripcion" rows={3} value={instrumento.descripcion} onChange={handleChange}></textarea>
+                    </div>
+    
+                    <div className="mb-3">
+                        <label htmlFor="id_categoria" className="form-label">Categoría:</label>
+                        <select className="form-select mx-auto" style={{ width: '50%' }} name="id_categoria" id="categoria" value={instrumento.categoria ? instrumento.categoria.id : ''} onChange={handleChange}>
+                            {categorias.map(categoria => (
+                                <option key={categoria.id} value={categoria.id}>{categoria.denominacion}</option>
+                            ))}
+                        </select>
+                    </div>
+    
+                    {instrumento.id === 0 ? (
+                        <button type='submit' className='btn btn-primary'>Crear</button>
+                    ) : (
+                        <button type='submit' className='btn btn-success'>Modificar</button>
+                    )}
+                </form>
+            </div>
         </>
     );
+    
+    
 };
 
 export default Form;

@@ -5,6 +5,8 @@ import com.example.demo.entities.Instrumento;
 import com.example.demo.services.ICategoriaService;
 import com.example.demo.services.IInstrumentoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,7 +40,14 @@ public class InstrumentoController {
 
     @DeleteMapping("/api/instrumentos/{id}")
     public void remove(@PathVariable String id){
-        iInstrumentoService.remove(Long.parseLong(id));
+        // Obtener el instrumento por su ID
+        Instrumento instrumento = iInstrumentoService.getById(Long.parseLong(id));
+
+            // Cambiar el estado del campo "eliminado" a true
+            instrumento.setEliminado(true);
+
+            // Guardar el instrumento actualizado en la base de datos
+            iInstrumentoService.save(instrumento);
     }
 
     @PutMapping("/api/instrumentos/{id}")
@@ -58,6 +67,34 @@ public class InstrumentoController {
         } else {
             // Si no se encuentra el instrumento con el ID dado, lanzar una excepción o manejar el error según sea necesario
             throw new RuntimeException("El instrumento con ID " + id + " no existe.");
+        }
+    }
+
+    @PutMapping("/api/restoreInstrumento/{id}")
+    public ResponseEntity<?> restoreInstrumento(@PathVariable Long id) {
+        try {
+            // Obtener el instrumento por su ID
+            Instrumento instrumento = iInstrumentoService.getById(id);
+
+            // Verificar si el instrumento existe y si está marcado como eliminado
+            if (instrumento != null && instrumento.getEliminado()) {
+                // Cambiar el estado del campo "eliminado" a false
+                instrumento.setEliminado(false);
+
+                // Guardar el instrumento actualizado en la base de datos
+                iInstrumentoService.save(instrumento);
+
+                // Devolver una respuesta exitosa con el instrumento restaurado
+                return ResponseEntity.ok(instrumento);
+            } else {
+                // Devolver una respuesta de error con un mensaje apropiado
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Instrumento no encontrado o no está marcado como eliminado");
+            }
+        } catch (Exception e) {
+            // Manejo de errores generales
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al restaurar el instrumento");
         }
     }
 

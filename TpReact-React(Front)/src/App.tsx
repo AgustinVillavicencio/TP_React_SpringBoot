@@ -25,7 +25,6 @@ function App() {
     mostrar();
   }, []);
 
-  // Renderizado del componente NavBar
   return (
     <>
     <CarritoContextProvider>
@@ -48,5 +47,4 @@ function App() {
   );
 }
 
-// Exportación del componente App como el componente predeterminado de la aplicación
 export default App;

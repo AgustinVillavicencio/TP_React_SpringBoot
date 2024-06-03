@@ -24,9 +24,36 @@ export async function getAll() {
     // Extrae los datos de la respuesta como JSON
     const data = await response.json();
 
+    // Filtra los instrumentos para excluir los que tengan el campo "eliminado" establecido en true
+    const instrumentosActivos = data.filter((instrumento: { eliminado: any; }) => !instrumento.eliminado);
+
+    // Retorna los datos obtenidos de la API filtrados por instrumentos activos
+    return instrumentosActivos;
+
+
+}
+
+export async function getAllIncludeEliminado() {
+    // URL de la API para obtener todos los instrumentos
+    const url = "http://localhost:8080/api/instrumentos";
+
+    // Realiza una solicitud GET a la API
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            "Content-Type": 'application/json',
+            "Access-Control-Allow-Origin": '*' // Permite solicitudes de cualquier origen
+        },
+        mode: 'cors' // Modo CORS para permitir solicitudes entre dominios
+    });
+
+    // Extrae los datos de la respuesta como JSON
+    const data = await response.json();
+
     // Retorna los datos obtenidos de la API
     return data;
 }
+
 
 // Función asincrónica para obtener un instrumento por su ID
 export async function getInstrumentoById(id: Number) {
@@ -340,4 +367,27 @@ export async function getDataThirdChart() {
 
     // Retorna los datos obtenidos de la API
     return data;
+}
+
+export async function restoreInstrumento(id: number) {
+    const url = `http://localhost:8080/api/restoreInstrumento/${id}`;
+
+    const response = await fetch(url, {
+        method: 'PUT', // Puedes usar PUT o POST según la convención de tu API
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*' // Permitir solicitudes de cualquier origen
+        },
+        mode: 'cors' // Modo CORS para permitir solicitudes entre dominios
+    });
+
+    if (response.ok) {
+        // Si la restauración es exitosa, devuelve la respuesta JSON
+        const data = await response.json();
+        return data;
+    } else {
+        // Si hay algún error en la restauración, lanzar una excepción con el mensaje de error
+        const errorData = await response.text();
+        throw new Error(errorData || `Error al restaurar el instrumento con ID ${id}`);
+    }
 }

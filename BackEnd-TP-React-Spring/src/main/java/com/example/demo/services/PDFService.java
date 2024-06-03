@@ -27,6 +27,7 @@ import java.net.URL;
 @Service
 public class PDFService {
 
+    @SuppressWarnings("resource")
     public ByteArrayInputStream generateInstrumentoPDF(Instrumento instrumento) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 

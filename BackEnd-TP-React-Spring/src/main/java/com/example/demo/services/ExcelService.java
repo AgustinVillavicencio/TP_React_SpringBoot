@@ -14,32 +14,79 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ExcelService {
 
     public ByteArrayInputStream exportInstrumentosToExcel(List<Instrumento> instrumentos) throws IOException {
+
+        List<Instrumento> filteredInstrumentos = instrumentos.stream()
+                .filter(instrumento -> !instrumento.getEliminado())
+                .collect(Collectors.toList());
+
         String[] columns = {"Id", "Instrumento", "Categoria", "Precio"};
 
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Sheet sheet = workbook.createSheet("Instrumentos");
 
-            // Create header row
-            Row headerRow = sheet.createRow(0);
+            // Definir el ancho de las columnas y el estilo de las celdas
+            int[] columnWidths = {5, 55, 12, 10};
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true); // Aplicar negrita
+            headerStyle.setFont(headerFont);
+            headerStyle.setAlignment(HorizontalAlignment.CENTER); // Centrar el texto
+            headerStyle.setFillForegroundColor(IndexedColors.LIGHT_ORANGE.getIndex()); // Color de fondo naranja claro
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND); // Patrón de relleno sólido
+            headerStyle.setBorderTop(BorderStyle.THIN); // Agregar borde superior
+            headerStyle.setBorderBottom(BorderStyle.THIN); // Agregar borde inferior
+            headerStyle.setBorderLeft(BorderStyle.THIN); // Agregar borde izquierdo
+            headerStyle.setBorderRight(BorderStyle.THIN); // Agregar borde derecho
+
+            CellStyle combinedStyle = workbook.createCellStyle();
+            combinedStyle.setAlignment(HorizontalAlignment.CENTER);
+            combinedStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex()); // Color de fondo amarillo claro
+            combinedStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND); // Patrón de relleno sólido
+            combinedStyle.setBorderTop(BorderStyle.THIN); // Agregar borde superior
+            combinedStyle.setBorderBottom(BorderStyle.THIN); // Agregar borde inferior
+            combinedStyle.setBorderLeft(BorderStyle.THIN); // Agregar borde izquierdo
+            combinedStyle.setBorderRight(BorderStyle.THIN); // Agregar borde derecho
+
+            // Setear el ancho de las columnas
+            for (int i = 0; i < columns.length; i++) {
+                sheet.setColumnWidth(i, columnWidths[i] * 256); // Multiplicar por 256 para convertir de caracteres a unidades de ancho de columna
+            }
+
+            // Crear el índice del encabezado de fila
+            int headerRowIdx = 0;
+            Row headerRow = sheet.createRow(headerRowIdx);
             for (int i = 0; i < columns.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(columns[i].toUpperCase());
+                cell.setCellStyle(headerStyle); // Aplicar estilo de encabezado
             }
 
-            // Create data rows
+            // Crear filas de datos
             int rowIdx = 1;
-            for (Instrumento instrumento : instrumentos) {
+            for (Instrumento instrumento : filteredInstrumentos) {
                 Row row = sheet.createRow(rowIdx++);
 
-                row.createCell(0).setCellValue(instrumento.getId());
-                row.createCell(1).setCellValue(instrumento.getInstrumento());
-                row.createCell(2).setCellValue(instrumento.getCategoria().getDenominacion());
-                row.createCell(3).setCellValue(instrumento.getPrecio());
+                Cell cell0 = row.createCell(0);
+                cell0.setCellValue(instrumento.getId());
+                cell0.setCellStyle(combinedStyle);
+
+                Cell cell1 = row.createCell(1);
+                cell1.setCellValue(instrumento.getInstrumento());
+                cell1.setCellStyle(combinedStyle);
+
+                Cell cell2 = row.createCell(2);
+                cell2.setCellValue(instrumento.getCategoria().getDenominacion());
+                cell2.setCellStyle(combinedStyle);
+
+                Cell cell3 = row.createCell(3);
+                cell3.setCellValue(instrumento.getPrecio());
+                cell3.setCellStyle(combinedStyle);
             }
 
             workbook.write(out);
@@ -54,13 +101,13 @@ public class ExcelService {
             Sheet sheet = workbook.createSheet("Pedidos");
 
             // Definir el ancho de las columnas y el estilo de las celdas
-            int[] columnWidths = {21, 40, 12, 10, 10, 8, 10};
+            int[] columnWidths = {21, 55, 12, 10, 10, 8, 10};
             CellStyle headerStyle = workbook.createCellStyle();
             Font headerFont = workbook.createFont();
             headerFont.setBold(true); // Aplicar negrita
             headerStyle.setFont(headerFont);
             headerStyle.setAlignment(HorizontalAlignment.CENTER); // Centrar el texto
-            headerStyle.setFillForegroundColor(IndexedColors.LIGHT_ORANGE.getIndex()); // Color de fondo naranjaClaro
+            headerStyle.setFillForegroundColor(IndexedColors.AQUA.getIndex()); // Color de fondo naranjaClaro
             headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND); // Patrón de relleno sólido
             headerStyle.setBorderTop(BorderStyle.THIN); // Agregar borde superior
             headerStyle.setBorderBottom(BorderStyle.THIN); // Agregar borde inferior
@@ -73,7 +120,7 @@ public class ExcelService {
             centeredStyle.setBorderLeft(BorderStyle.THIN); // Agregar borde izquierdo
             centeredStyle.setBorderRight(BorderStyle.THIN); // Agregar borde derecho
             CellStyle lightYellowStyle = workbook.createCellStyle();
-            lightYellowStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex()); // Color de fondo amarillo claro
+            lightYellowStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex()); // Color de fondo amarillo claro
             lightYellowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND); // Patrón de relleno sólido
             lightYellowStyle.setBorderTop(BorderStyle.THIN); // Agregar borde superior
             lightYellowStyle.setBorderBottom(BorderStyle.THIN); // Agregar borde inferior

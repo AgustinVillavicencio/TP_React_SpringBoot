@@ -1,5 +1,4 @@
 import Instrumento from "../Entities/Instrumento";
-import "../Estilos/InfoDetalle.css"
 
 // Definición de la interfaz Props que describe las propiedades esperadas para el componente InfoDetails
 interface Props {

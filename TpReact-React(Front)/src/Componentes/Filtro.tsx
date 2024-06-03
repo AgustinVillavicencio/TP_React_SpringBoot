@@ -8,7 +8,7 @@ interface FiltroProps {
 
 const Filtro: React.FC<FiltroProps> = () => {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [instrumentos, setInstrumentos] = useState<Instrumento[]>([]);
+  const [, setInstrumentos] = useState<Instrumento[]>([]);
 
 
   useEffect(() => {

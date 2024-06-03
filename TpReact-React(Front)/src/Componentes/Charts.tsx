@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { Chart } from "react-google-charts";
 import NavBar from './NavBar';
 import { getDataFirstChart, getDataSecondChart, getDataThirdChart } from '../Functions/FunctionsApi.ts'; // Ajusta la ruta según tu estructura de archivos

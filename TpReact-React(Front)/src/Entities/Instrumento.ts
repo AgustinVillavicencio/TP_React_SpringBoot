@@ -8,7 +8,8 @@ export default class Instrumento {
     imagen: string='';
     precio: number=0;
     costoEnvio: string='';
-    cantidadVendida: string='';
+    cantidadVendida: number=0;
     descripcion: string='';
+    eliminado: boolean=false;
     categoria?:Categoria;
 }

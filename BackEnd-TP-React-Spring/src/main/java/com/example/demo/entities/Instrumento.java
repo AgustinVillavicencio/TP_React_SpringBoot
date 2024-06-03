@@ -23,6 +23,7 @@ public class Instrumento {
     private String costoEnvio;
     private Integer cantidadVendida;
     private String descripcion;
+    private Boolean eliminado;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_categoria")

@@ -1,21 +1,20 @@
 import NavBar from "./NavBar";
+
 // Define el componente funcional Map
 const Map = () => {
     return (
         <>
-            {/* Renderiza la barra de navegación */}
-            <NavBar/>
-
-            {/* Renderiza un iframe con un mapa de Google Maps */}
+        <NavBar/>
+        <h1 className="mt-4">Donde estamos</h1>
+        <p>Nos encontramos en Av. Las Heras y Av. San Martin, Ciudad de Mendoza</p>
             <iframe 
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3972.659205395689!2d-68.84077890284249!3d-32.886532167830985!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x967e091ed2dd83f7%3A0xf41c7ab7e3522157!2sAv.%20San%20Mart%C3%ADn%20%26%20Av.%20Las%20Heras%2C%20Capital%2C%20Mendoza!5e0!3m2!1ses-419!2sar!4v1713209825390!5m2!1ses-419!2sar" 
                 width="800" 
-                height="600" 
+                height="400" 
                 loading="lazy" 
             ></iframe>        
         </>
     )
 }
 
-// Exporta el componente Map como el componente predeterminado
 export default Map;

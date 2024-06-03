@@ -1,6 +1,7 @@
 import Instrumento from '../Entities/Instrumento';
-import '../index.css'
+import '../index.css';
 import { UseCarrito } from '../Context/UseCarrito';
+import { useNavigate } from 'react-router-dom';
 
 // Definición de la interfaz Props que describe las propiedades esperadas para el componente Card
 interface Props {
@@ -10,9 +11,10 @@ interface Props {
 
 // Definición del componente funcional Card que recibe las propiedades definidas en la interfaz Props
 const Card: React.FC<Props> = (props: Props) => {
-    // Lógica para determinar la ruta de la imagen
     const rutaImagen = props.info.imagen.startsWith('http') ? props.info.imagen : `../src/assets/img/${props.info.imagen}`;
-    const {addCarrito,removeItemCarrito} = UseCarrito()
+    const { addCarrito, removeItemCarrito } = UseCarrito();
+    const navigate = useNavigate();
+    
     // Lógica para determinar el mensaje de costo de envío
     const infoCostoEnvio = props.info.costoEnvio !== 'G' && props.info.costoEnvio !== '0'
         ? "Costo de Envio interior Argentina: " + props.info.costoEnvio
@@ -23,6 +25,10 @@ const Card: React.FC<Props> = (props: Props) => {
         ? 'CostoInterior mt-4'
         : 'CostoGratis mt-4 ';
 
+    const handleDetalleClick = () => {
+        navigate(`/instrumentos/${props.info.id}`);
+    }
+    
     // Renderiza el componente Card
     return (
         <>
@@ -34,9 +40,9 @@ const Card: React.FC<Props> = (props: Props) => {
                     <img src={rutaImagen} alt={props.info.instrumento} style={{ width: "100px" }} />
                 </div>
                 {/* Contenedor para la información del instrumento */}
-                <div className='cardBody '>
+                <div className='cardBody'>
                     {/* Renderiza el título del instrumento */}
-                    <h2 className='title d-flex justify-content-start align-items-start'>{props.info.instrumento}</h2>
+                    <h2 className='title'>{props.info.instrumento}</h2>
                     {/* Renderiza el precio del instrumento */}
                     <p className='mt-4 price'>${props.info.precio}</p>
                     {/* Renderiza el mensaje de costo de envío y la imagen del camión si corresponde */}
@@ -49,11 +55,9 @@ const Card: React.FC<Props> = (props: Props) => {
                 </div>
                 {/* Enlace al detalle del instrumento */}
                 <div className='column-container'>
-                    <a href={`instrumentos/${props.info.id}`}>
-                        Detalle
-                    </a>
-                    <button className="btn btn-success" onClick={()=>addCarrito(props.info)}>Añadir a carrito</button>
-                    <button className="btn btn-danger" onClick={()=>removeItemCarrito(props.info)}>Sacar de carrito</button>
+                    <button className="btn btn-primary" onClick={handleDetalleClick}>Detalle</button>
+                    <button className="btn btn-success" onClick={() => addCarrito(props.info)}>Añadir a carrito</button>
+                    <button className="btn btn-danger" onClick={() => removeItemCarrito(props.info)}>Sacar de carrito</button>
                 </div>
             </div>
         </>

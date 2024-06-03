@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import Instrumento from "../Entities/Instrumento";
 import Categoria from "../Entities/Categoria";
-import { createExcelInstrumentos,  createExcelPedidos,  deleteInstrumento, getAll, getAllCategorias } from '../Functions/FunctionsApi';
+import { createExcelInstrumentos,  createExcelPedidos,  deleteInstrumento, getAllCategorias, getAllIncludeEliminado, restoreInstrumento } from '../Functions/FunctionsApi';
 import NavBar from './NavBar';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Button, Table, Form, Modal, FormControl } from 'react-bootstrap';
@@ -15,11 +15,13 @@ const Grilla: React.FC<Props> = () => {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [fechaDesde, setFechaDesde] = useState<string | undefined>(undefined);
     const [fechaHasta, setFechaHasta] = useState<string | undefined>(undefined);
+    const [todosPedidos, setTodosPedidos] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const cargarDatos = async () => {
             try {
-                const instrumentosData = await getAll();
+                const instrumentosData = await getAllIncludeEliminado();
                 setInstrumentos(instrumentosData);
                 
                 const categoriasData = await getAllCategorias();
@@ -38,14 +40,15 @@ const Grilla: React.FC<Props> = () => {
             const confirmDelete = window.confirm("Desea eliminar el instrumento?");
             if (confirmDelete) {
                 await deleteInstrumento(id);
-                setInstrumentos(instrumentos.filter(instrumento => instrumento.id !== id));
+                alert("Instrumento eliminado con exito!")
             }
+            window.location.reload()
         } catch (error) {
             console.error('Error al eliminar el instrumento:', error);
         }
     };
 
-    const navigate = useNavigate();
+    
 
     const handleModificar = (id: number) => {
         navigate(`/formulario/${id}`);
@@ -94,6 +97,34 @@ const Grilla: React.FC<Props> = () => {
         setFechaHasta(value); // Establecer directamente el valor en el estado
     };
 
+     // Función para manejar el cambio del checkbox
+     const handleTodosPedidosChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setTodosPedidos(event.target.checked);
+        if (event.target.checked) {
+            setFechaDesde("2024-01-01");
+            setFechaHasta("2025-01-01");
+        } else {
+            setFechaDesde(undefined);
+            setFechaHasta(undefined);
+        }
+    };
+
+    const handleRestore = async (id: number) => {
+        try {
+            const confirmRestore = window.confirm("¿Desea reestablecer el instrumento?");
+            if (confirmRestore) {
+                // Llamar a la función para restaurar el instrumento y esperar su respuesta
+                await restoreInstrumento(id);
+                alert("Restauracion exitosa!");
+                window.location.reload();
+            }
+        } catch (error) {
+            // Mostrar el mensaje de error al usuario
+            alert(`Error al reestablecer el instrumento`);
+            console.error('Error al reestablecer el instrumento:', error);
+        }
+    };
+
     return (
         <>
             <NavBar />
@@ -140,16 +171,26 @@ const Grilla: React.FC<Props> = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {instrumentos.filter(instrumento => !filtroCategoria || instrumento.categoria?.denominacion === filtroCategoria).map(instrumento => (
-                                    <tr key={instrumento.id}>
-                                        <td>{instrumento.id}</td>
-                                        <td>{instrumento.instrumento}</td>
-                                        <td>{instrumento.categoria?.denominacion}</td>
-                                        <td>{instrumento.precio}</td>
-                                        <td><Button className='btn btn-success' onClick={() => handleModificar(instrumento.id)}>Modificar</Button></td>
-                                        <td><Button className='btn btn-danger' onClick={() => handleDelete(instrumento.id)}>Eliminar</Button></td>
-                                    </tr>
-                                ))}
+                            {instrumentos.filter(instrumento => !filtroCategoria || instrumento.categoria?.denominacion === filtroCategoria).map(instrumento => (
+                                <tr key={instrumento.id}>
+                                    <td>{instrumento.id}</td>
+                                    <td>{instrumento.instrumento}</td>
+                                    <td>{instrumento.categoria?.denominacion}</td>
+                                    <td>{instrumento.precio}</td>
+                                    {instrumento.eliminado ? (
+                                        // Si el instrumento está eliminado, mostrar un botón para reestablecer
+                                        <td colSpan={2}>
+                                            <Button className='btn btn-warning' onClick={() => handleRestore(instrumento.id)}>Reestablecer</Button>
+                                        </td>
+                                    ) : (
+                                        // Si el instrumento no está eliminado, mostrar botones para modificar y eliminar
+                                        <>
+                                            <td><Button className='btn btn-success' onClick={() => handleModificar(instrumento.id)}>Modificar</Button></td>
+                                            <td><Button className='btn btn-danger' onClick={() => handleDelete(instrumento.id)}>Eliminar</Button></td>
+                                        </>
+                                    )}
+                                </tr>
+                            ))}
                             </tbody>
                         </Table>
                     </Col>
@@ -168,6 +209,9 @@ const Grilla: React.FC<Props> = () => {
                     <Form.Group controlId="fechaHasta">
                         <Form.Label>Hasta:</Form.Label>
                         <FormControl type="date" value={fechaHasta || ''} onChange={handleFechaHastaChange}/>
+                    </Form.Group>
+                    <Form.Group controlId="todosPedidos">
+                        <Form.Check type="checkbox" label="Todos los pedidos" checked={todosPedidos} onChange={handleTodosPedidosChange} />
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
