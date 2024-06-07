@@ -224,8 +224,8 @@ const Form: React.FC<Props> = () => {
     
                     <div className="mb-3">
                         <label htmlFor="imagen" className="form-label">Imagen:</label><br />
-                        <img src={"/src/assets/img/"+instrumento.imagen} alt="imagenInstrumento" />
-                        <input type="file" className="form-control mx-auto w-50" name="imagen" onChange={handleImagenChange} />
+                        <img src={"/src/assets/img/"+instrumento.imagen} alt="imagenInstrumento" width="160" />
+                        <input type="file" className="form-control mx-auto w-50 mt-2" name="imagen" onChange={handleImagenChange} />
                     </div>
     
                     <div className="mb-3">

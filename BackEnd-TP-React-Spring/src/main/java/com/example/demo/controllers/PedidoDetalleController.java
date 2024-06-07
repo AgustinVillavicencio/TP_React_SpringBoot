@@ -32,6 +32,12 @@ public class PedidoDetalleController {
 
             Instrumento instrumento = iInstrumentoService.getById(pedidoDetalle.getInstrumento().getId());
             pedidoDetalle.setInstrumento(instrumento);
+
+            // Actualizar la cantidad vendida del instrumento
+            int nuevaCantidadVendida = instrumento.getCantidadVendida() + pedidoDetalle.getCantidad();
+            instrumento.setCantidadVendida(nuevaCantidadVendida);
+
+            iInstrumentoService.save(instrumento);
         }
 
         // Guardar todos los pedidoDetalles y devolver la lista completa

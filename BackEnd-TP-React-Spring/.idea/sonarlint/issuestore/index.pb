@@ -57,3 +57,5 @@ j
 :src/main/java/com/example/demo/services/PedidoService.java,5\a\5a8056732f933e5641ce77a2cf11a46a095ed4a5
 p
 @src/main/java/com/example/demo/controllers/PedidoController.java,1\6\168f4bffd0d6a7bfdc9c689ae68cac9ef5d8081e
+k
+;src/main/java/com/example/demo/services/IPedidoService.java,e\4\e49fd83f1a18a8e40dc396b10bff92a5219fc49b

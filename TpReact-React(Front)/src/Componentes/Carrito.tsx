@@ -43,7 +43,7 @@ export default function Carrito() {
 
       // Guardar el pedido primero
       const nuevoPedido: Pedido = {
-        fechaPedido: new Date(), // Asignar la fecha actual o según sea necesario
+        fechaPedido: new Date(), // Asignar la fecha actual
         totalPedido: totalPedido // Usar el total del pedido del contexto
       };
       const pedidoGuardado = await postData<Pedido>("http://localhost:8080/api/pedidos/save", nuevoPedido);
@@ -100,7 +100,7 @@ export default function Carrito() {
         </div>
         <div className="d-flex align-items-center justify-content-evenly">
           <button className="btn btn-warning" onClick={handleSendData}>
-            Enviar Datos
+            Comprar
           </button>
           <button className="btn btn-warning me-2" onClick={limpiarCarrito} title="Limpiar Todo">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" strokeWidth="1" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">

@@ -36,7 +36,7 @@ public class ExcelController {
         ByteArrayInputStream in = excelService.exportInstrumentosToExcel(instrumentos);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "attachment; filename=instrumentos.xlsx");
+        headers.add("Content-Disposition", "attachment; filename=Instrumentos.xlsx");
 
         return ResponseEntity
                 .ok()
@@ -60,7 +60,7 @@ public class ExcelController {
         ByteArrayInputStream in = excelService.exportPedidosToExcel(detallesPedidos);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "attachment; filename=instrumentos.xlsx");
+        headers.add("Content-Disposition", "attachment; filename=Pedidos.xlsx");
 
         return ResponseEntity
                 .ok()
